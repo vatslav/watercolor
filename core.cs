@@ -40,13 +40,13 @@ namespace watercolor
                                                         -1, 4, -1,
                                                         0, -1, 0};
         List<int> curFilterMx = new  List<int>();
-        const int sizeMx = 5;
-        List<List<PxColor>> curPixelList = new List<List<PxColor>>(sizeMx);
+        const int mxOnWaterColor = 5;
+        List<List<PxColor>> curPixelList = new List<List<PxColor>>();
         public Core(PictureBox mainCanvas) 
         { 
             this.mainCanvas = mainCanvas;
             curFilterMx = mxEdgesEnhancement; //на случай большего кода
-            clearCurMx();
+            clearCurMx(mxOnWaterColor);
 
 
 
@@ -71,7 +71,7 @@ namespace watercolor
         public void applyFilter()
         {
             curFilterMx = mxEdgesEnhancement;
-            clearCurMx();
+            clearCurMx(mxOnWaterColor);
             waterColorFilter();
             return;
         }
@@ -81,16 +81,16 @@ namespace watercolor
             int width = bitmap.Width;
             int height = bitmap.Height;            
             resultBitmap = new Bitmap(width, height);
-            List<int> red = new List<int>(sizeMx);
-            List<int> grin = new List<int>(sizeMx);
-            List<int> blue = new List<int>(sizeMx);
+            List<int> red = new List<int>(mxOnWaterColor);
+            List<int> grin = new List<int>(mxOnWaterColor);
+            List<int> blue = new List<int>(mxOnWaterColor);
             int index=0;
-
+            //сглаживание
             foreach(var x in Enumerable.Range(0, width))
             {
                 foreach (var y in Enumerable.Range(0, height))
                 {
-                    get9Elems(x, y);
+                    getElems(x, y, mxOnWaterColor);
                     foreach (var ListElem in curPixelList)
                     {
                         foreach (var elem in ListElem)
@@ -106,20 +106,26 @@ namespace watercolor
                     }
                     red.Sort();                    
                     grin.Sort();
-                    blue.Sort();//
-                    index = (int)((sizeMx - (sizeMx - index)) / 2);
+                    blue.Sort();
+                    index = (int)((mxOnWaterColor - (mxOnWaterColor - index)) / 2);
 
                     resultBitmap.SetPixel(x, y, Color.FromArgb(255, red[index], grin[index], blue[index]));
                     index = 0;
                     red.Clear();
                     grin.Clear();
                     blue.Clear();
-
-
-
-
                 }
             }
+            ///выделение краев
+            //foreach (var x in Enumerable.Range(0, width))
+            //{
+            //    foreach (var y in Enumerable.Range(0, height))
+            //    {
+                    
+            //    }
+
+            //}
+                    
 
             mainCanvas.Image = (Image)resultBitmap;
             return;
@@ -130,15 +136,15 @@ namespace watercolor
         /// <param name="x">координата по Х</param>
         /// <param name="y">координата по У</param>
         /// <returns></returns>
-        private void get9Elems(int x, int y)
+        private void getElems(int x, int y, int sqrtOffNumberElem)
         {
             
             
             int i, j;
             i = j  = 0;
-            foreach (var ix in Enumerable.Range(x - 1, 3))
+            foreach (var ix in Enumerable.Range(x - 1, sqrtOffNumberElem))
             {
-                foreach (var iy in Enumerable.Range(y - 1, 3))
+                foreach (var iy in Enumerable.Range(y - 1, sqrtOffNumberElem))
                 {
                     if (ix < 0 || iy < 0 || ix>=bitmap.Width ||iy>=bitmap.Height)
                     {
@@ -185,14 +191,15 @@ namespace watercolor
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        private void clearCurMx()
+        private void clearCurMx(int size)
         {
             PxColor temp = new PxColor(Color.FromArgb(0, 0, 0, 0), false);
             curPixelList.Clear();
-            foreach(var i in Enumerable.Range(0,curPixelList.Capacity))
+            curPixelList.Capacity = size;
+            foreach (var i in Enumerable.Range(0, size))
             {
-                curPixelList.Add(new List<PxColor>());
-                foreach (var j in Enumerable.Range(0, curPixelList.Capacity))
+                curPixelList.Add(new List<PxColor>(size));
+                foreach (var j in Enumerable.Range(0, size))
                     curPixelList[i].Add(temp);
             }
 
