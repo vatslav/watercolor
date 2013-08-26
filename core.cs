@@ -111,6 +111,9 @@ namespace watercolor
 
                     resultBitmap.SetPixel(x, y, Color.FromArgb(255, red[index], grin[index], blue[index]));
                     index = 0;
+                    red.Clear();
+                    grin.Clear();
+                    blue.Clear();
 
 
 
