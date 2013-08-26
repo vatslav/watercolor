@@ -36,17 +36,18 @@ namespace watercolor
         private Bitmap resultBitmap;
         PictureBox mainCanvas;
         //матрица выделения краев
-        List<int> mxEdgesEnhancement = new  List<int>{0, -1, 0,
+        List<int> waterColorMask = new  List<int>{0, -1, 0,
                                                         -1, 4, -1,
                                                         0, -1, 0};
         List<int> curFilterMx = new  List<int>();
-        const int mxOnWaterColor = 5;
+        const int bluerOnWaterColor = 5;
+        const int edgeMaxOnWaterCol = 3;
         List<List<PxColor>> curPixelList = new List<List<PxColor>>();
         public Core(PictureBox mainCanvas) 
         { 
             this.mainCanvas = mainCanvas;
-            curFilterMx = mxEdgesEnhancement; //на случай большего кода
-            clearCurMx(mxOnWaterColor);
+            //curFilterMx = waterColorMask; //на случай большего кода
+            clearCurMx(bluerOnWaterColor);
 
 
 
@@ -70,27 +71,27 @@ namespace watercolor
 
         public void applyFilter()
         {
-            curFilterMx = mxEdgesEnhancement;
-            clearCurMx(mxOnWaterColor);
+            curFilterMx = waterColorMask;
+            
             waterColorFilter();
             return;
         }
         private void waterColorFilter()
         {
-
+            clearCurMx(bluerOnWaterColor);
             int width = bitmap.Width;
             int height = bitmap.Height;            
             resultBitmap = new Bitmap(width, height);
-            List<int> red = new List<int>(mxOnWaterColor);
-            List<int> grin = new List<int>(mxOnWaterColor);
-            List<int> blue = new List<int>(mxOnWaterColor);
+            List<int> red = new List<int>(bluerOnWaterColor);
+            List<int> grin = new List<int>(bluerOnWaterColor);
+            List<int> blue = new List<int>(bluerOnWaterColor);
             int index=0;
             //сглаживание
             foreach(var x in Enumerable.Range(0, width))
             {
                 foreach (var y in Enumerable.Range(0, height))
                 {
-                    getElems(x, y, mxOnWaterColor);
+                    getElems(x, y, bluerOnWaterColor);
                     foreach (var ListElem in curPixelList)
                     {
                         foreach (var elem in ListElem)
@@ -107,7 +108,7 @@ namespace watercolor
                     red.Sort();                    
                     grin.Sort();
                     blue.Sort();
-                    index = (int)((mxOnWaterColor - (mxOnWaterColor - index)) / 2);
+                    index = (int)((bluerOnWaterColor - (bluerOnWaterColor - index)) / 2);
 
                     resultBitmap.SetPixel(x, y, Color.FromArgb(255, red[index], grin[index], blue[index]));
                     index = 0;
@@ -116,15 +117,48 @@ namespace watercolor
                     blue.Clear();
                 }
             }
-            ///выделение краев
-            //foreach (var x in Enumerable.Range(0, width))
-            //{
-            //    foreach (var y in Enumerable.Range(0, height))
-            //    {
-                    
-            //    }
+            //выделение краев
+            List<int> Red = new List<int>(edgeMaxOnWaterCol);
+            List<int> Grin = new List<int>(edgeMaxOnWaterCol);
+            List<int> Blue = new List<int>(edgeMaxOnWaterCol);
+            
+            foreach (var x in Enumerable.Range(0, width))
+            {
+                foreach (var y in Enumerable.Range(0, height))
+                {
+                    getElems(x, y, edgeMaxOnWaterCol);
+                    foreach (var listElem in curPixelList)
+                    {
+                        foreach (var elem in listElem)
+                        {
+                            
+                            
+                                Red.Add(elem.color.R);
+                                Grin.Add(elem.color.G);
+                                Blue.Add(elem.color.B);
+                                
+                        
+                            
+                            
+                        }
+                        
 
-            //}
+                    }
+                    
+                    foreach (var i in Enumerable.Range(0, edgeMaxOnWaterCol))
+                    {
+                        Red[i]  *= waterColorMask[i];
+                        Grin[i] *= waterColorMask[i];
+                        Blue[i] *= waterColorMask[i];
+                        resultBitmap.SetPixel(x,y, Color.FromArgb(red.Sum(), grin.Sum(), blue.Sum()));
+                    }
+                    Red.Clear();
+                    Grin.Clear();
+                    Blue.Clear();
+                    
+                }
+
+            }
                     
 
             mainCanvas.Image = (Image)resultBitmap;
