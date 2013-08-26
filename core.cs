@@ -20,8 +20,7 @@ namespace watercolor
         }
         public string ColorToString()
         {
-            return color.A.ToString() + " " + color.B.ToString() + " " +
-                color.G.ToString() + " " + color.R.ToString();
+            return color.A.ToString() + " " + color.B.ToString() + " " + color.G.ToString() + " " + color.R.ToString();
         }
     }
 
@@ -36,12 +35,12 @@ namespace watercolor
                                                         -1, 4, -1,
                                                         0, -1, 0};
         List<int> curFilterMx = new  List<int>();
-        List<List<PxColor>> curPixelList = new List<List<PxColor>>(25);
+        List<List<PxColor>> curPixelList = new List<List<PxColor>>(3);
         public Core(PictureBox mainCanvas) 
         { 
             this.mainCanvas = mainCanvas;
             curFilterMx = mxEdgesEnhancement; //на случай большего кода
-            clearCurMx(3,3);
+            clearCurMx();
 
 
 
@@ -74,10 +73,10 @@ namespace watercolor
 
             int width = bitmap.Width;
             int height = bitmap.Height;
+            printCurPicturLsit();
             resultBitmap = new Bitmap(width, height);
             get9Elems(25, 25);
-            foreach (var t in curPixelList)
-                Console.WriteLine(t.ToString());
+            printCurPicturLsit();
 
             return;
         }
@@ -89,40 +88,60 @@ namespace watercolor
         /// <returns></returns>
         private void get9Elems(int x, int y)
         {
-            clearCurMx(3,3);
+            clearCurMx();
+            int i, j;
+            i = j = 0;
             for (int ix = x - 1; ix < x + 1; ix++)
-            {
+            {   
                 for (int iy = y - 1; iy < x + 1; iy++)
                 {
                     try
                     {
-                        curPixelList[x][y] = new PxColor(bitmap.GetPixel(ix, iy), true);
-                       
+                        curPixelList[i][j] = new PxColor(bitmap.GetPixel(ix, iy), true);
+
                     }
                     catch (ArgumentOutOfRangeException)
                     {
-                        
-                        
-                    }
+                        curPixelList[i][j] = new PxColor(Color.FromArgb(0,0,0,0), false);
 
+                    }
+                    j++;
                 }
+                j = 0;
+                i++;
 
             }
             return;
+        }
+        private void printCurPicturLsit()
+        {
+            int i = 0;
+            int j = 0;
+            foreach (var l in curPixelList)
+            {
+                foreach (var px in l)
+                {
+                    Console.WriteLine(String.Format("({0},{1} - {2},{3})", px.ColorToString(), px.isExist.ToString(), i, j));
+                    j++;
+                }
+                j = 0;
+                i++;
+            }
+            Console.WriteLine();
         }
         /// <summary>
         /// обнуляет список текущих элементов
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        private void clearCurMx(int x, int y)
+        private void clearCurMx()
         {
-            Color temp = Color.FromArgb(0,0,0,0);
+            PxColor temp = new PxColor(Color.FromArgb(0, 0, 0, 0), false);
             curPixelList.Clear();
-            for (int i=0;i<x;i++)
+            for (int i = 0; i < curPixelList.Capacity; i++)
             {
-                curPixelList.Add(new List<Color>());
-                for (int j = 0; j < y; j++)
+                curPixelList.Add(new List<PxColor>());
+                for (int j = 0; j < curPixelList.Capacity; j++)
                     curPixelList[i].Add(temp);
             }
 
