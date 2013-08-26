@@ -19,6 +19,7 @@ namespace watercolor
             InitializeComponent();
             core = new Core(pictureBox1);
             core.openFile(@"C:\Users\Public\Pictures\Sample Pictures\Chrysanthemum.jpg");
+            core.applyFilter();
             
         }
         
