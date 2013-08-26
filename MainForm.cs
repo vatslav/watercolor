@@ -17,6 +17,7 @@ namespace watercolor
         public MainForm()
         {
             InitializeComponent();
+            brightLabel.Text = brightTrackBar.Value.ToString();
             core = new Core(pictureBox1);
             //core.openFile(@"C:\Users\Public\Pictures\Sample Pictures\Chrysanthemum3.jpg");
             //core.applyFilter();
@@ -44,25 +45,24 @@ namespace watercolor
 
         private void bApply_Click(object sender, EventArgs e)
         {
-            //List<int> mx = new List<int>();
-            //try
-            //{
-            //    mx.Add(Convert.ToInt32(textBox11.Text));
-            //    mx.Add(Convert.ToInt32(textBox12.Text));
-            //    mx.Add(Convert.ToInt32(textBox13.Text));
-            //    mx.Add(Convert.ToInt32(textBox21.Text));
-            //    mx.Add(Convert.ToInt32(textBox22.Text));
-            //    mx.Add(Convert.ToInt32(textBox23.Text));
-            //    mx.Add(Convert.ToInt32(textBox31.Text));
-            //    mx.Add(Convert.ToInt32(textBox32.Text));
-            //    mx.Add(Convert.ToInt32(textBox33.Text));
-            //}
-            //catch (ArgumentException)
-            //{
-            //    MessageBox.Show("не верное значение элемента матрицы");
-            //    return;
-            //}
             core.applyFilter();
+        }
+
+        private void bSafe_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveDial = new SaveFileDialog();
+            saveDial.Filter = "изображения .jpg|*.jpg";
+            saveDial.Title = "Сохранение изображения";
+            saveDial.ShowDialog();
+            if (saveDial.FileName != "")
+                core.safeFile(saveDial.FileName);
+
+        }
+
+        private void brightTrackBar_Scroll(object sender, EventArgs e)
+        {
+            brightLabel.Text = brightTrackBar.Value.ToString();
+            core.changeBright(brightTrackBar.Value);
         }
     }
 }

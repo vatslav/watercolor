@@ -36,60 +36,44 @@ namespace watercolor
         private Bitmap resultBitmap;
         PictureBox mainCanvas;
         //матрица выделения краев
-        List<int> waterColorMask = new  List<int>{0, -1, 0,
-                                                        -1, 4, -1,
-                                                        0, -1, 0};
+        List<List<int>> waterColorMask2d = new List<List<int>>{new List<int>{0,-1,0},
+                                                                new List<int>{-1, 4, -1},
+                                                                new List<int>{0, -1, 0}};
         List<int> curFilterMx = new  List<int>();
         const int bluerOnWaterColor = 5;
         const int edgeMaxOnWaterCol = 3;
+        const int edgeMaxOnWaterColLiniearly = edgeMaxOnWaterCol * edgeMaxOnWaterCol;
         List<List<PxColor>> curPixelList = new List<List<PxColor>>();
-        public Core(PictureBox mainCanvas) 
+        List<int> red = new List<int>(edgeMaxOnWaterCol);
+        List<int> grin = new List<int>(edgeMaxOnWaterCol);
+        List<int> blue = new List<int>(edgeMaxOnWaterCol);
+        Dictionary<String, payLoad> functionDB = new Dictionary<string, payLoad>();
+        public Core(PictureBox mainCanvas, Form MainForm) 
         { 
             this.mainCanvas = mainCanvas;
             //curFilterMx = waterColorMask; //на случай большего кода
-            clearCurMx(bluerOnWaterColor);
+            clearCurMxs(bluerOnWaterColor);
 
 
 
         
         }
-        /// <summary>
-        /// загрузка картинки
-        /// </summary>
-        /// <param name="path"></param>
-        public void openFile(String path)
-        {
-               if (bitmap != null)
-               {
-                  bitmap.Dispose();
-               }
-            mainCanvas.SizeMode = PictureBoxSizeMode.StretchImage;
-            bitmap = new Bitmap(path);
-            mainCanvas.Image = (Image)bitmap;
-
-        }
 
         public void applyFilter()
         {
-            curFilterMx = waterColorMask;
-            
+            resultBitmap = new Bitmap(bitmap.Width, bitmap.Height);
+            bluerWaterColor();
             waterColorFilter();
             return;
         }
-        private void waterColorFilter()
+        private void bluerWaterColor()
         {
-            clearCurMx(bluerOnWaterColor);
-            int width = bitmap.Width;
-            int height = bitmap.Height;            
-            resultBitmap = new Bitmap(width, height);
-            List<int> red = new List<int>(bluerOnWaterColor);
-            List<int> grin = new List<int>(bluerOnWaterColor);
-            List<int> blue = new List<int>(bluerOnWaterColor);
-            int index=0;
+            clearCurMxs(bluerOnWaterColor);
+            int index = 0;
             //сглаживание
-            foreach(var x in Enumerable.Range(0, width))
+            foreach (var x in Enumerable.Range(0, bitmap.Width))
             {
-                foreach (var y in Enumerable.Range(0, height))
+                foreach (var y in Enumerable.Range(0, bitmap.Height))
                 {
                     getElems(x, y, bluerOnWaterColor);
                     foreach (var ListElem in curPixelList)
@@ -105,7 +89,7 @@ namespace watercolor
                             }
                         }
                     }
-                    red.Sort();                    
+                    red.Sort();
                     grin.Sort();
                     blue.Sort();
                     index = (int)((bluerOnWaterColor - (bluerOnWaterColor - index)) / 2);
@@ -117,44 +101,38 @@ namespace watercolor
                     blue.Clear();
                 }
             }
+
+        }
+        private void waterColorFilter()
+        {
             //выделение краев
-            List<int> Red = new List<int>(edgeMaxOnWaterCol);
-            List<int> Grin = new List<int>(edgeMaxOnWaterCol);
-            List<int> Blue = new List<int>(edgeMaxOnWaterCol);
-            
-            foreach (var x in Enumerable.Range(0, width))
+            clearCurMxs(edgeMaxOnWaterCol);
+
+
+            foreach (var x in Enumerable.Range(0, bitmap.Width))
             {
-                foreach (var y in Enumerable.Range(0, height))
+                foreach (var y in Enumerable.Range(0, bitmap.Height))
                 {
                     getElems(x, y, edgeMaxOnWaterCol);
-                    foreach (var listElem in curPixelList)
+                    foreach (var ix in Enumerable.Range(0,edgeMaxOnWaterCol))
                     {
-                        foreach (var elem in listElem)
+                        foreach (var iy in Enumerable.Range(0,edgeMaxOnWaterCol))
                         {
-                            
-                            
-                                Red.Add(elem.color.R);
-                                Grin.Add(elem.color.G);
-                                Blue.Add(elem.color.B);
-                                
-                        
-                            
-                            
+                            if (curPixelList[ix][iy].isExist)
+                            {
+                                 red.Add(curPixelList[ix][iy].color.R * waterColorMask2d[ix][iy]);
+                                grin.Add(curPixelList[ix][iy].color.G * waterColorMask2d[ix][iy]);
+                                blue.Add(curPixelList[ix][iy].color.B * waterColorMask2d[ix][iy]);
+                            } 
                         }
-                        
+                    }
 
-                    }
+                    resultBitmap.SetPixel(x, y, Color.FromArgb(repairColor(red.Sum()), repairColor(grin.Sum()), repairColor(blue.Sum())));
                     
-                    foreach (var i in Enumerable.Range(0, edgeMaxOnWaterCol))
-                    {
-                        Red[i]  *= waterColorMask[i];
-                        Grin[i] *= waterColorMask[i];
-                        Blue[i] *= waterColorMask[i];
-                        resultBitmap.SetPixel(x,y, Color.FromArgb(red.Sum(), grin.Sum(), blue.Sum()));
-                    }
-                    Red.Clear();
-                    Grin.Clear();
-                    Blue.Clear();
+                    red.Clear();
+                    grin.Clear();
+                    blue.Clear();
+                    clearCurMxs(edgeMaxOnWaterCol);
                     
                 }
 
@@ -164,6 +142,32 @@ namespace watercolor
             mainCanvas.Image = (Image)resultBitmap;
             return;
         }
+        private delegate void payLoad(int x, int y);
+
+        private void mainLoppCicle(String nameFunc)
+        {
+            clearCurMxs(edgeMaxOnWaterCol);
+            foreach (var x in Enumerable.Range(0, bitmap.Width))
+            {
+                foreach (var y in Enumerable.Range(0, bitmap.Height))
+                {
+                    if (functionDB.ContainsKey(nameFunc))
+                        throw new ArgumentException(string.Format("Operation {0} is invalid", nameFunc), "NameFunc");
+                    functionDB[nameFunc](x,y);
+                }
+            }
+        }
+
+        private int repairColor(int color)
+        {
+            color = color / 9;
+            if (color < 0)
+                return 0;
+            if (color > 255)
+                return 255;
+            return color;
+        }
+
         /// <summary>
         /// возвращает список соседних элементов пикселя
         /// </summary>
@@ -188,22 +192,19 @@ namespace watercolor
                     try
                     {
                         curPixelList[i][j] = new PxColor(bitmap.GetPixel(ix, iy), true);
-
                     }  
                     catch (ArgumentOutOfRangeException)
                     {
                         curPixelList[i][j] = new PxColor(null);
-
                     }
                     j++;
-
                 }
                 j = 0;
                 i++;
-
             }
             return;
         }
+
         private void printCurPicturLsit()
         {
             int i = 0;
@@ -220,12 +221,14 @@ namespace watercolor
             }
             Console.WriteLine();
         }
+
+
         /// <summary>
         /// обнуляет список текущих элементов
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        private void clearCurMx(int size)
+        private void clearCurMxs(int size)
         {
             PxColor temp = new PxColor(Color.FromArgb(0, 0, 0, 0), false);
             curPixelList.Clear();
@@ -236,32 +239,46 @@ namespace watercolor
                 foreach (var j in Enumerable.Range(0, size))
                     curPixelList[i].Add(temp);
             }
+            red.Clear();
+            grin.Clear();
+            blue.Clear();
 
         }
-        /// <summary>
-        /// определяет существуют ли такой пиксель
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        private bool virifyPixelAdress(int x, int y)
+
+        public void changeBright()
         {
-            if (x < 0 || y < 0)
-                return false;
-            else
-            {
-                try
-                {
-                    bitmap.GetPixel(x, y);
-                    return true;
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    return false;
-                }
-            }
+            clearCurMxs(3);
+
         }
+
+
+        /// <summary>
+        /// загрузка картинки
+        /// </summary>
+        /// <param name="path"></param>
+        public void openFile(String path)
+        {
+            if (bitmap != null)
+            {
+                bitmap.Dispose();
+            }
+            mainCanvas.SizeMode = PictureBoxSizeMode.StretchImage;
+            bitmap = new Bitmap(path);
+            mainCanvas.Image = (Image)bitmap;
+
+        }
+
+        public void safeFile(String path)
+        {
+            resultBitmap.Save(path);
+        }
+
 
 
     }
 }
+
+
+        //List<int> waterColorMask = new  List<int>{0, -1, 0,
+        //                                                -1, 4, -1,
+        //                                                0, -1, 0};
