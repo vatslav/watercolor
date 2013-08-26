@@ -18,6 +18,11 @@ namespace watercolor
             this.isExist = isExist;
 
         }
+        public PxColor(object obj)
+        {
+            color = Color.FromArgb(0, 0, 0, 0);
+            isExist = false;
+        }
         public string ColorToString()
         {
             return color.A.ToString() + " " + color.B.ToString() + " " + color.G.ToString() + " " + color.R.ToString();
@@ -75,7 +80,7 @@ namespace watercolor
             int height = bitmap.Height;
             printCurPicturLsit();
             resultBitmap = new Bitmap(width, height);
-            get9Elems(25, 25);
+            get9Elems(78, 47);
             printCurPicturLsit();
 
             return;
@@ -89,23 +94,26 @@ namespace watercolor
         private void get9Elems(int x, int y)
         {
             clearCurMx();
-            int i, j;
-            i = j = 0;
-            for (int ix = x - 1; ix < x + 1; ix++)
+            PxColor temp = new PxColor(null);
+            int i, j,z;
+            i = j = z = 0;
+            foreach(var ix in Enumerable.Range(x-1,3))
             {   
-                for (int iy = y - 1; iy < x + 1; iy++)
+                foreach(var iy in Enumerable.Range(y-1,3))
                 {
                     try
                     {
-                        curPixelList[i][j] = new PxColor(bitmap.GetPixel(ix, iy), true);
+                        temp = new PxColor(bitmap.GetPixel(ix, iy), true);
 
-                    }
+                    }  
                     catch (ArgumentOutOfRangeException)
                     {
-                        curPixelList[i][j] = new PxColor(Color.FromArgb(0,0,0,0), false);
+                        temp = new PxColor(null);
 
                     }
+                    curPixelList[i][j] = temp;
                     j++;
+
                 }
                 j = 0;
                 i++;
@@ -138,10 +146,10 @@ namespace watercolor
         {
             PxColor temp = new PxColor(Color.FromArgb(0, 0, 0, 0), false);
             curPixelList.Clear();
-            for (int i = 0; i < curPixelList.Capacity; i++)
+            foreach(var i in Enumerable.Range(0,curPixelList.Capacity))
             {
                 curPixelList.Add(new List<PxColor>());
-                for (int j = 0; j < curPixelList.Capacity; j++)
+                foreach (var j in Enumerable.Range(0, curPixelList.Capacity))
                     curPixelList[i].Add(temp);
             }
 
