@@ -106,7 +106,7 @@ namespace watercolor
                     }
                     red.Sort();                    
                     grin.Sort();
-                    blue.Sort();
+                    blue.Sort();//
                     index = (int)((sizeMx - (sizeMx - index)) / 2);
 
                     resultBitmap.SetPixel(x, y, Color.FromArgb(255, red[index], grin[index], blue[index]));
