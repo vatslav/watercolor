@@ -40,7 +40,8 @@ namespace watercolor
                                                         -1, 4, -1,
                                                         0, -1, 0};
         List<int> curFilterMx = new  List<int>();
-        List<List<PxColor>> curPixelList = new List<List<PxColor>>(3);
+        const int sizeMx = 5;
+        List<List<PxColor>> curPixelList = new List<List<PxColor>>(sizeMx);
         public Core(PictureBox mainCanvas) 
         { 
             this.mainCanvas = mainCanvas;
@@ -69,7 +70,8 @@ namespace watercolor
 
         public void applyFilter()
         {
-            curFilterMx = mxEdgesEnhancement; 
+            curFilterMx = mxEdgesEnhancement;
+            clearCurMx();
             waterColorFilter();
             return;
         }
@@ -77,12 +79,46 @@ namespace watercolor
         {
 
             int width = bitmap.Width;
-            int height = bitmap.Height;
-            printCurPicturLsit();
+            int height = bitmap.Height;            
             resultBitmap = new Bitmap(width, height);
-            get9Elems(78, 47);
-            printCurPicturLsit();
+            List<int> red = new List<int>(sizeMx);
+            List<int> grin = new List<int>(sizeMx);
+            List<int> blue = new List<int>(sizeMx);
+            int index=0;
 
+            foreach(var x in Enumerable.Range(0, width))
+            {
+                foreach (var y in Enumerable.Range(0, height))
+                {
+                    get9Elems(x, y);
+                    foreach (var ListElem in curPixelList)
+                    {
+                        foreach (var elem in ListElem)
+                        {
+                            if (elem.isExist)
+                            {
+                                red.Add(elem.color.R);
+                                grin.Add(elem.color.G);
+                                blue.Add(elem.color.B);
+                                index++;
+                            }
+                        }
+                    }
+                    red.Sort();                    
+                    grin.Sort();
+                    blue.Sort();
+                    index = (int)((sizeMx - (sizeMx - index)) / 2);
+
+                    resultBitmap.SetPixel(x, y, Color.FromArgb(255, red[index], grin[index], blue[index]));
+                    index = 0;
+
+
+
+
+                }
+            }
+
+            mainCanvas.Image = (Image)resultBitmap;
             return;
         }
         /// <summary>
@@ -93,25 +129,29 @@ namespace watercolor
         /// <returns></returns>
         private void get9Elems(int x, int y)
         {
-            clearCurMx();
-            PxColor temp = new PxColor(null);
-            int i, j,z;
-            i = j = z = 0;
-            foreach(var ix in Enumerable.Range(x-1,3))
-            {   
-                foreach(var iy in Enumerable.Range(y-1,3))
+            
+            
+            int i, j;
+            i = j  = 0;
+            foreach (var ix in Enumerable.Range(x - 1, 3))
+            {
+                foreach (var iy in Enumerable.Range(y - 1, 3))
                 {
+                    if (ix < 0 || iy < 0 || ix>=bitmap.Width ||iy>=bitmap.Height)
+                    {
+                        curPixelList[i][j] = new PxColor(null);
+                        continue;
+                    }
                     try
                     {
-                        temp = new PxColor(bitmap.GetPixel(ix, iy), true);
+                        curPixelList[i][j] = new PxColor(bitmap.GetPixel(ix, iy), true);
 
                     }  
                     catch (ArgumentOutOfRangeException)
                     {
-                        temp = new PxColor(null);
+                        curPixelList[i][j] = new PxColor(null);
 
                     }
-                    curPixelList[i][j] = temp;
                     j++;
 
                 }

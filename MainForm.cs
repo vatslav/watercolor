@@ -18,8 +18,8 @@ namespace watercolor
         {
             InitializeComponent();
             core = new Core(pictureBox1);
-            core.openFile(@"C:\Users\Public\Pictures\Sample Pictures\Chrysanthemum.jpg");
-            core.applyFilter();
+            //core.openFile(@"C:\Users\Public\Pictures\Sample Pictures\Chrysanthemum3.jpg");
+            //core.applyFilter();
             
         }
         
