@@ -65,9 +65,8 @@ namespace watercolor
 
         public void applyFilter()
         {
-            
-            bluerWaterColor();
-            waterColor();
+
+            waterColorFilter();
             return;
         }
         private void waterColorFilter()
@@ -113,6 +112,7 @@ namespace watercolor
                 }
             }
             bitmap = resultBitmap;
+            mainCanvas.Image = (Image)resultBitmap;
 
         }
         private void waterColor()
@@ -278,7 +278,7 @@ namespace watercolor
                     blue = curPixelList[0][0].color.B + brightValue;
                     resultBitmap.SetPixel(x, y, Color.FromArgb(repairColor(red), repairColor(grin), repairColor(blue)));
 
-                    clearCurMxs(edgeMaxOnWaterCol);
+                    //clearCurMxs(edgeMaxOnWaterCol);
                 }
             }
 
