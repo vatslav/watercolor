@@ -34,8 +34,8 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.brightTrackBar = new System.Windows.Forms.TrackBar();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.brightLabel = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.brightTrackBar)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -104,15 +104,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Параметры изображения";
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 23);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 13);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "Яркость:";
-            // 
             // brightLabel
             // 
             this.brightLabel.AutoSize = true;
@@ -121,6 +112,15 @@
             this.brightLabel.Size = new System.Drawing.Size(25, 13);
             this.brightLabel.TabIndex = 8;
             this.brightLabel.Text = "128";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 23);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(53, 13);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "Яркость:";
             // 
             // MainForm
             // 

@@ -12,7 +12,7 @@ namespace watercolor
     public partial class MainForm : Form
     {
         Core core;
-        public int curBright;
+        public int brightValue;
 
         public MainForm()
         {
@@ -62,8 +62,8 @@ namespace watercolor
         private void brightTrackBar_Scroll(object sender, EventArgs e)
         {
             brightLabel.Text = brightTrackBar.Value.ToString();
-            curBright = brightTrackBar.Value;
-            core.changeBright();
+            brightValue = brightTrackBar.Value;
+            core.changeBright(brightTrackBar.Value);
         }
     }
 }
