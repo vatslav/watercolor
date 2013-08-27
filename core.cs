@@ -37,7 +37,7 @@ namespace watercolor
         PictureBox mainCanvas;
         //матрица выделения краев
         List<List<int>> waterColorMask2d = new List<List<int>>{new List<int>{0,-1,0},
-                                                                new List<int>{-1, 4, -1},
+                                                                new List<int>{-1, 5, -1},
                                                                 new List<int>{0, -1, 0}};
         List<int> curFilterMx = new  List<int>();
         const int bluerOnWaterColor = 5;
@@ -160,7 +160,7 @@ namespace watercolor
 
         private int repairColor(int color)
         {
-            color = color / 9;
+            //color = color / 9;
             if (color < 0)
                 return 0;
             if (color > 255)

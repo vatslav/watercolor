@@ -12,13 +12,13 @@ namespace watercolor
     public partial class MainForm : Form
     {
         Core core;
-        public IListSource matrix;
-        public List<int> mx = new List<int>();
+        public int curBright;
+
         public MainForm()
         {
             InitializeComponent();
             brightLabel.Text = brightTrackBar.Value.ToString();
-            core = new Core(pictureBox1);
+            core = new Core(pictureBox1, this);
             //core.openFile(@"C:\Users\Public\Pictures\Sample Pictures\Chrysanthemum3.jpg");
             //core.applyFilter();
             
@@ -62,7 +62,8 @@ namespace watercolor
         private void brightTrackBar_Scroll(object sender, EventArgs e)
         {
             brightLabel.Text = brightTrackBar.Value.ToString();
-            core.changeBright(brightTrackBar.Value);
+            curBright = brightTrackBar.Value;
+            core.changeBright();
         }
     }
 }
