@@ -59,6 +59,8 @@ namespace watercolor
 
         private void bSafe_Click(object sender, EventArgs e)
         {
+            if (core.isFast())
+                return;
             SaveFileDialog saveDial = new SaveFileDialog();
             saveDial.Filter = "изображения .jpg|*.jpg";
             saveDial.Title = "Сохранение изображения";

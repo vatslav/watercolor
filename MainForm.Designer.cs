@@ -52,7 +52,7 @@
             // 
             // bOpen
             // 
-            this.bOpen.Location = new System.Drawing.Point(210, 19);
+            this.bOpen.Location = new System.Drawing.Point(813, 51);
             this.bOpen.Name = "bOpen";
             this.bOpen.Size = new System.Drawing.Size(91, 61);
             this.bOpen.TabIndex = 0;
@@ -68,7 +68,6 @@
             this.bApply.TabIndex = 1;
             this.bApply.Text = "применить фильтр";
             this.bApply.UseVisualStyleBackColor = true;
-            this.bApply.UseWaitCursor = true;
             this.bApply.Click += new System.EventHandler(this.bApply_Click);
             // 
             // bSafe
@@ -114,7 +113,6 @@
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Управление изображением";
-            this.groupBox1.UseWaitCursor = true;
             // 
             // brightLabel
             // 
@@ -167,7 +165,6 @@
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.bApply);
-            this.groupBox4.Controls.Add(this.bOpen);
             this.groupBox4.Controls.Add(this.bSafe);
             this.groupBox4.Location = new System.Drawing.Point(6, 20);
             this.groupBox4.Name = "groupBox4";
@@ -175,7 +172,6 @@
             this.groupBox4.TabIndex = 12;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Быстрый доступ";
-            this.groupBox4.UseWaitCursor = true;
             // 
             // groupBox5
             // 
@@ -191,8 +187,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(786, 310);
+            this.ClientSize = new System.Drawing.Size(916, 392);
             this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.bOpen);
             this.Controls.Add(this.groupBox5);
             this.Name = "MainForm";
             this.Text = "Акварелизация";
