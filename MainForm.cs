@@ -33,7 +33,12 @@ namespace watercolor
                 askLoad.ShowDialog();
                 Console.WriteLine(askLoad.FileName);
                 if (askLoad.FileName != "")
+                {
                     core.openFile(askLoad.FileName);
+                    this.brightTrackBar.Value = 128;
+                    brightLabel.Text = "128";
+                }
+
             }
             catch (Exception ex)
             {
@@ -72,6 +77,11 @@ namespace watercolor
 
         private void brightTrackBar_Scroll(object sender, EventArgs e)
         {
+            if (core.isFast())
+            {
+                brightTrackBar.Value = 128;
+                return;
+            }
             brightLabel.Text = brightTrackBar.Value.ToString();
             brightValue = brightTrackBar.Value;
             core.changeBright(brightTrackBar.Value);
