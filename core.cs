@@ -50,13 +50,19 @@ namespace watercolor
         List<int> blue = new List<int>(edgeMaxOnWaterCol);
         Dictionary<String, payLoad> functionDB = new Dictionary<string, payLoad>();
         private delegate void payLoad(int x, int y);
+        public String [] filtersList = new [] {"Акварелизация", "Размытие методом усреднения", "Размытие", 
+        "увелечение резкости", "сглаживание контуров", "выделение границ разноцветных областей"};
+        Dictionary<String, List<List<int>>> filterDict;
         //private delegate void payLoad(int x, int y, int brightValue);
         List<int> t = new List<int>(){1,2,3};
-        public Core(PictureBox mainCanvas, Form MainForm) 
+        public Core(PictureBox mainCanvas, ComboBox cb, Form MainForm) 
         { 
             this.mainCanvas = mainCanvas;
             //curFilterMx = waterColorMask; //на случай большего кода
             clearCurMxs(bluerOnWaterColor);
+            cb.DataSource = filtersList;
+            
+            
 
 
 
@@ -75,6 +81,16 @@ namespace watercolor
             bluerWaterColor();
             waterColor();
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool isFast()
+        {
+            if (bitmap == null)
+                return true;
+            return false;
+        }
+
         private void bluerWaterColor()
         {
             

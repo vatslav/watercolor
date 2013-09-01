@@ -18,19 +18,17 @@ namespace watercolor
         {
             InitializeComponent();
             brightLabel.Text = brightTrackBar.Value.ToString();
-            core = new Core(pictureBox1, this);
+            core = new Core(pictureBox1, comboBox1, this);
             //core.openFile(@"C:\Users\Public\Pictures\Sample Pictures\Chrysanthemum3.jpg");
             //core.applyFilter();
             
         }
-        
-        
-        private void bOpen_Click(object sender, EventArgs e)
+        private void openImage()
         {
             try
             {
                 OpenFileDialog askLoad = new OpenFileDialog();
-                askLoad.Filter = "jpeg|*.jpg|сырое изображение|*.bmp"; 
+                askLoad.Filter = "jpeg|*.jpg|сырое изображение|*.bmp";
                 askLoad.Title = "Выберети изображение";
                 askLoad.ShowDialog();
                 Console.WriteLine(askLoad.FileName);
@@ -42,10 +40,21 @@ namespace watercolor
                 MessageBox.Show("Ошибка: " + ex.Message);
             }
         }
+        
+        private void bOpen_Click(object sender, EventArgs e)
+        {
+            openImage();
+        }
 
         private void bApply_Click(object sender, EventArgs e)
         {
+            if (core.isFast())
+                return;
+            //this.UseWaitCursor = true;
+            //this.pictureBox1.UseWaitCursor = true;
             core.applyFilter();
+            //this.UseWaitCursor = false;
+            //this.pictureBox1.UseWaitCursor = false;
         }
 
         private void bSafe_Click(object sender, EventArgs e)
@@ -64,6 +73,12 @@ namespace watercolor
             brightLabel.Text = brightTrackBar.Value.ToString();
             brightValue = brightTrackBar.Value;
             core.changeBright(brightTrackBar.Value);
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            if (core.isFast())
+                openImage();
         }
     }
 }
