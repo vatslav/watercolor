@@ -36,9 +36,12 @@ namespace watercolor
         private Bitmap resultBitmap;
         PictureBox mainCanvas;
         //матрица выделения краев
-        List<List<int>> waterColorMask2d = new List<List<int>>{new List<int>{0,-1,0},
-                                                                new List<int>{-1, 4, -1},
-                                                                new List<int>{0, -1, 0}};
+        List<List<double>> waterColorMask2d = new List<List<double>>{new List<double>{-0.5,-0.5,-0.5},
+                                                                new List<double>{-0.5, 5, -0.5},
+                                                                new List<double>{-0.5, -0.5, -0.5}};
+        //List<List<double>> waterColorMask2d = new List<List<double>>{new List<double>{0,05, 0,05, 0,05},
+        //                                                        new List<double>{0,05,0,06,0,05},
+        //                                                        new List<double>{0,05,0,05,0,05}};
         List<int> curFilterMx = new  List<int>();
         const int bluerOnWaterColor = 5;
         const int edgeMaxOnWaterCol = 3;
@@ -49,10 +52,13 @@ namespace watercolor
         List<int> grin = new List<int>(edgeMaxOnWaterCol);
         List<int> blue = new List<int>(edgeMaxOnWaterCol);
         Dictionary<String, payLoad> functionDB = new Dictionary<string, payLoad>();
-        private delegate void payLoad(int x, int y);
-        public String [] filtersList = new [] {"Акварелизация", "Размытие методом усреднения", "Размытие", 
-        "увелечение резкости", "сглаживание контуров", "выделение границ разноцветных областей"};
-        Dictionary<String, List<List<int>>> filterDict;
+        public String curFilter = "Акварелизация";
+        public bool initFinished = false;
+        private delegate void payLoad();
+        double devisor=1;
+        public List <String> filtersList = new List<string>(); /* = new [] {"Акварелизация", "Размытие методом усреднения", "Размытие", 
+        "увелечение резкости", "сглаживание контуров", "выделение границ разноцветных областей"};*/
+        Dictionary<String, List<List<double>>> filterDict = new Dictionary<string, List<List<double>>>();
         //private delegate void payLoad(int x, int y, int brightValue);
         List<int> t = new List<int>(){1,2,3};
         public Core(PictureBox mainCanvas, ComboBox cb, Form MainForm) 
@@ -60,29 +66,60 @@ namespace watercolor
             this.mainCanvas = mainCanvas;
             //curFilterMx = waterColorMask; //на случай большего кода
             clearCurMxs(bluerOnWaterColor);
+            
+            //filterDict = new Dictionary<string,List<List<int>>>() {ne
+            filterDict.Add("Акварелизация", new List<List<double>>{new List<double>{-0.5,-0.5,-0.5},
+                                                                new List<double>{-0.5, 5, -0.5},
+                                                                new List<double>{-0.5, -0.5, -0.5}});
+            filterDict.Add("Размытие методом усреднения", new List<List<double>>());
+            filterDict.Add("Размытие", new List<List<double>>{new List<double>{1,1,1},
+                                                                new List<double>{1,8,1},
+                                                                new List<double>{1,1,1}});
+
+            filterDict.Add("увелечение резкости", new List<List<double>>{new List<double>{0,-1,0},
+                                                                new List<double>{-1,5,-1},
+                                                                new List<double>{0,-1,0}});
+
+            filterDict.Add("сглаживание контуров", new List<List<double>>{new List<double>{0,1,0},
+                                                                new List<double>{1,1,1},
+                                                                new List<double>{0,1,0}});
+
+            filterDict.Add("выделение границ разноцветных областей",  new List<List<double>>{new List<double>{0,-1,0},
+                                                                new List<double>{-1, 4, -1},
+                                                                new List<double>{0, -1, 0}});
+            functionDB.Add("Акварелизация", aquaColor);
+            functionDB.Add("Размытие методом усреднения", bluerOnAvergeMedian);
+            foreach (var filterEntry in filterDict)
+            {
+                filtersList.Add(filterEntry.Key);
+            }
             cb.DataSource = filtersList;
-            
-            
-
-
-
+            initFinished = true;
         
         }
 
         public void applyFilter()
         {
-
-            waterColorFilter();
+            bitmap = resultBitmap;
+            functionDB[curFilter]();
+            
             return;
         }
+
+        void aquaColor()
+        {
+            bluerOnAvergeMedian();
+            mainLoppCicle(waterColorMask2d);
+        }
+
         private void waterColorFilter()
         {
-            bitmap = resultBitmap;
-            bluerWaterColor();
+            bluerOnAvergeMedian();
+            
             waterColor();
         }
         /// <summary>
-        /// 
+        /// первый ли раз запущено приложение?
         /// </summary>
         public bool isFast()
         {
@@ -91,7 +128,10 @@ namespace watercolor
             return false;
         }
 
-        private void bluerWaterColor()
+        /// <summary>
+        /// сглаживание методом серединного усреденения
+        /// </summary>
+        private void bluerOnAvergeMedian()
         {
             
             clearCurMxs(bluerOnWaterColor);
@@ -131,6 +171,10 @@ namespace watercolor
             mainCanvas.Image = (Image)resultBitmap;
 
         }
+
+        /// <summary>
+        /// применение матрицы фильтра
+        /// </summary>
         private void waterColor()
         {
             //выделение краев
@@ -142,16 +186,16 @@ namespace watercolor
             {
                 foreach (var y in Enumerable.Range(0, bitmap.Height))
                 {
-                    getElems(x, y, edgeMaxOnWaterCol);
+                   getElems(x, y, edgeMaxOnWaterCol);
                     foreach (var ix in Enumerable.Range(0,edgeMaxOnWaterCol))
                     {
                         foreach (var iy in Enumerable.Range(0,edgeMaxOnWaterCol))
                         {
                             if (curPixelList[ix][iy].isExist)
                             {
-                                 red.Add(curPixelList[ix][iy].color.R * waterColorMask2d[ix][iy]);
-                                grin.Add(curPixelList[ix][iy].color.G * waterColorMask2d[ix][iy]);
-                                blue.Add(curPixelList[ix][iy].color.B * waterColorMask2d[ix][iy]);
+                                 red.Add(Convert.ToInt32(curPixelList[ix][iy].color.R * waterColorMask2d[ix][iy]));
+                                grin.Add(Convert.ToInt32(curPixelList[ix][iy].color.G * waterColorMask2d[ix][iy]));
+                                blue.Add(Convert.ToInt32(curPixelList[ix][iy].color.B * waterColorMask2d[ix][iy]));
                             } 
                         }
                     }
@@ -173,23 +217,63 @@ namespace watercolor
         }
         
 
-        private void mainLoppCicle(String nameFunc)
+        private void mainLoppCicle(List<List<double>> filterMask, int sizeMx=edgeMaxOnWaterCol)
         {
-            clearCurMxs(edgeMaxOnWaterCol);
+            clearCurMxs(sizeMx);
+
+
             foreach (var x in Enumerable.Range(0, bitmap.Width))
             {
                 foreach (var y in Enumerable.Range(0, bitmap.Height))
                 {
-                    if (functionDB.ContainsKey(nameFunc))
-                        throw new ArgumentException(string.Format("Operation {0} is invalid", nameFunc), "NameFunc");
-                    functionDB[nameFunc](x,y);
+                    getElems(x, y, sizeMx);
+                    foreach (var ix in Enumerable.Range(0, sizeMx))
+                    {
+                        foreach (var iy in Enumerable.Range(0, sizeMx))
+                        {
+                            if (curPixelList[ix][iy].isExist)
+                            {
+                                red.Add(Convert.ToInt32(curPixelList[ix][iy].color.R *  filterMask[ix][iy]));
+                                grin.Add(Convert.ToInt32(curPixelList[ix][iy].color.G * filterMask[ix][iy]));
+                                blue.Add(Convert.ToInt32(curPixelList[ix][iy].color.B * filterMask[ix][iy]));
+                            }
+                        }
+                    }
+                    devisor = findSumMatrixElem(filterMask);
+                    resultBitmap.SetPixel(x, y, Color.FromArgb(repairColor(red.Sum()), repairColor(grin.Sum()), repairColor(blue.Sum())));
+
+                    red.Clear();
+                    grin.Clear();
+                    blue.Clear();
+                    clearCurMxs(sizeMx);
+
                 }
+
             }
+
+            bitmap = resultBitmap;
+            mainCanvas.Image = (Image)resultBitmap;
+            return;
         }
+        double findSumMatrixElem(List<List<double>> filterMask)
+        {
+            double sum=0;
+            foreach (var row in filterMask)
+            {
+                foreach (var cell in row)
+                {
+                    sum += cell;
+                }
+
+            }
+            return sum;
+
+        }
+
 
         private int repairColor(int color)
         {
-            color = color / divisionIndex;
+            color = Convert.ToInt32(color / devisor);
             if (color < 0)
                 return 0;
             if (color > 255)
@@ -203,12 +287,12 @@ namespace watercolor
         /// <param name="x">координата по Х</param>
         /// <param name="y">координата по У</param>
         /// <returns></returns>
-        private void getElems(int x, int y, int count, int offStart=-1)
+        private int getElems(int x, int y, int count, int offStart=-1)
         {
             
             
-            int i, j;
-            i = j  = 0;
+            int i, j,z;
+            i = j  = z =0;
             foreach (var ix in Enumerable.Range(x + offStart, count))
             {
                 foreach (var iy in Enumerable.Range(y + offStart, count))
@@ -227,11 +311,12 @@ namespace watercolor
                         curPixelList[i][j] = new PxColor(null);
                     }
                     j++;
+                    z++;
                 }
                 j = 0;
                 i++;
             }
-            return;
+            return z;
         }
 
         private void printCurPicturLsit()

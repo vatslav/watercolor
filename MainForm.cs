@@ -55,11 +55,11 @@ namespace watercolor
         {
             if (core.isFast())
                 return;
-            //this.UseWaitCursor = true;
-            //this.pictureBox1.UseWaitCursor = true;
+            this.UseWaitCursor = true;
+            this.pictureBox1.UseWaitCursor = true;
             core.applyFilter();
-            //this.UseWaitCursor = false;
-            //this.pictureBox1.UseWaitCursor = false;
+            this.UseWaitCursor = false;
+            this.pictureBox1.UseWaitCursor = false;
         }
 
         private void bSafe_Click(object sender, EventArgs e)
@@ -91,6 +91,14 @@ namespace watercolor
         {
             if (core.isFast())
                 openImage();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (Equals(core,null))
+                return;
+            var t = comboBox1.SelectedItem.ToString();
+            core.curFilter = comboBox1.SelectedItem.ToString();
         }
     }
 }

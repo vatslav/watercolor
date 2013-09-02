@@ -34,19 +34,19 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.brightTrackBar = new System.Windows.Forms.TrackBar();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.brightLabel = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.brightLabel = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.brightTrackBar)).BeginInit();
             this.groupBox1.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -114,31 +114,17 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Управление изображением";
             // 
-            // brightLabel
+            // groupBox4
             // 
-            this.brightLabel.AutoSize = true;
-            this.brightLabel.Location = new System.Drawing.Point(117, 16);
-            this.brightLabel.Name = "brightLabel";
-            this.brightLabel.Size = new System.Drawing.Size(25, 13);
-            this.brightLabel.TabIndex = 8;
-            this.brightLabel.Text = "128";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(105, 13);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "Текущее значение:";
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(6, 19);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(278, 21);
-            this.comboBox1.TabIndex = 9;
+            this.groupBox4.Controls.Add(this.bApply);
+            this.groupBox4.Controls.Add(this.bOpen);
+            this.groupBox4.Controls.Add(this.bSafe);
+            this.groupBox4.Location = new System.Drawing.Point(6, 20);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(318, 110);
+            this.groupBox4.TabIndex = 12;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Быстрый доступ";
             // 
             // groupBox2
             // 
@@ -149,6 +135,15 @@
             this.groupBox2.TabIndex = 10;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Тип фильтра";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(6, 19);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(278, 21);
+            this.comboBox1.TabIndex = 9;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // groupBox3
             // 
@@ -162,17 +157,23 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Яркость изображения";
             // 
-            // groupBox4
+            // label1
             // 
-            this.groupBox4.Controls.Add(this.bApply);
-            this.groupBox4.Controls.Add(this.bOpen);
-            this.groupBox4.Controls.Add(this.bSafe);
-            this.groupBox4.Location = new System.Drawing.Point(6, 20);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(318, 110);
-            this.groupBox4.TabIndex = 12;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Быстрый доступ";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 16);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(105, 13);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "Текущее значение:";
+            // 
+            // brightLabel
+            // 
+            this.brightLabel.AutoSize = true;
+            this.brightLabel.Location = new System.Drawing.Point(117, 16);
+            this.brightLabel.Name = "brightLabel";
+            this.brightLabel.Size = new System.Drawing.Size(25, 13);
+            this.brightLabel.TabIndex = 8;
+            this.brightLabel.Text = "128";
             // 
             // groupBox5
             // 
@@ -196,10 +197,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.brightTrackBar)).EndInit();
             this.groupBox1.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.ResumeLayout(false);
 
