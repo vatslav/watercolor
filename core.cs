@@ -76,37 +76,65 @@ namespace watercolor
             filterDict.Add("Размытие", new List<List<double>>{new List<double>{1,1,1},
                                                                 new List<double>{1,8,1},
                                                                 new List<double>{1,1,1}});
+            filterDict.Add("Размытие по цвету соседей", new List<List<double>>{new List<double>{0,05, 0,05, 0,05},
+                                                                new List<double>{0,05,0,06,0,05},
+                                                                new List<double>{0,05,0,05,0,05}});
 
-            filterDict.Add("увелечение резкости", new List<List<double>>{new List<double>{0,-1,0},
+            filterDict.Add("Увелечение резкости", new List<List<double>>{new List<double>{0,-1,0},
                                                                 new List<double>{-1,5,-1},
                                                                 new List<double>{0,-1,0}});
 
-            filterDict.Add("сглаживание контуров", new List<List<double>>{new List<double>{0,1,0},
+            filterDict.Add("Увелечение резкости2", new List<List<double>>{new List<double>{-0.1,-0.1,-0.1},
+                                                                new List<double>{-0.1,1.8,-0.1},
+                                                                new List<double>{-0.1,-0.1,-0.1}});
+            filterDict.Add("Сглаживание контуров", new List<List<double>>{new List<double>{0,1,0},
                                                                 new List<double>{1,1,1},
                                                                 new List<double>{0,1,0}});
 
-            filterDict.Add("выделение границ разноцветных областей",  new List<List<double>>{new List<double>{0,-1,0},
+            filterDict.Add("Выделение границ разноцветных областей",  new List<List<double>>{new List<double>{0,-1,0},
                                                                 new List<double>{-1, 4, -1},
                                                                 new List<double>{0, -1, 0}});
+            filterDict.Add("Тиснение0", new List<List<double>>{new List<double>{-1,0,1},
+                                                                new List<double>{-2,0,2},
+                                                                new List<double>{-1, 0,1}});
+            filterDict.Add("Тиснение1", new List<List<double>>{new List<double>{-1,-1,-1},
+                                                                new List<double>{-1,8,-1},
+                                                                new List<double>{-1, -1,-1}});
+            filterDict.Add("Тиснение2", new List<List<double>>{new List<double>{0,-1,0},
+                                                                new List<double>{-1,4,-1},
+                                                                new List<double>{0, -1,0}});
             functionDB.Add("Акварелизация", aquaColor);
             functionDB.Add("Размытие методом усреднения", bluerOnAvergeMedian);
             functionDB.Add("Размытие", simpleFilter);
-            functionDB.Add("увелечение резкости", simpleFilter);
-            functionDB.Add("сглаживание контуров", simpleFilter);
-            functionDB.Add("выделение границ разноцветных областей", simpleFilter);
-            functionDB.Add("resetBright", resetBright); 
-            foreach (var filterEntry in filterDict)
+            functionDB.Add("Увелечение резкости", simpleFilter);
+            functionDB.Add("Сглаживание контуров", simpleFilter);
+            functionDB.Add("Выделение границ разноцветных областей", simpleFilter);
+            functionDB.Add("Размытие по цвету соседей", simpleFilter);
+            functionDB.Add("Увелечение резкости2", simpleFilter);
+            
+            functionDB.Add("Тиснение", embossed);
+            foreach (var filterEntry in functionDB)
             {
                 filtersList.Add(filterEntry.Key);
             }
             cb.DataSource = filtersList;
+            functionDB.Add("resetBright", resetBright);
            // initFinished = true;
         
         }
+        /// <summary>
+        /// применение фильра в случаях простых преобразований (отличие только в матрице)
+        /// </summary>
         void simpleFilter()
         {
             mainLoppCicle(filterDict[curFilter]);
             
+        }
+        void embossed()
+        {
+            mainLoppCicle(filterDict["Тиснение0"]);
+            mainLoppCicle(filterDict["Тиснение1"]);
+            mainLoppCicle(filterDict["Тиснение2"]);
         }
 
         public void applyFilter()
