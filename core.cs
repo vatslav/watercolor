@@ -53,15 +53,16 @@ namespace watercolor
         List<int> blue = new List<int>(edgeMaxOnWaterCol);
         Dictionary<String, payLoad> functionDB = new Dictionary<string, payLoad>();
         public String curFilter = "Акварелизация";
-        public bool initFinished = false;
-        private delegate void payLoad();
+        public bool brightHold = false;
+        
+        public delegate void payLoad();
         double devisor=1;
         public List <String> filtersList = new List<string>(); /* = new [] {"Акварелизация", "Размытие методом усреднения", "Размытие", 
         "увелечение резкости", "сглаживание контуров", "выделение границ разноцветных областей"};*/
         Dictionary<String, List<List<double>>> filterDict = new Dictionary<string, List<List<double>>>();
         //private delegate void payLoad(int x, int y, int brightValue);
         List<int> t = new List<int>(){1,2,3};
-        public Core(PictureBox mainCanvas, ComboBox cb, Form MainForm) 
+        public Core(PictureBox mainCanvas, ComboBox cb, payLoad resetBright) 
         { 
             this.mainCanvas = mainCanvas;
             //curFilterMx = waterColorMask; //на случай большего кода
@@ -89,19 +90,30 @@ namespace watercolor
                                                                 new List<double>{0, -1, 0}});
             functionDB.Add("Акварелизация", aquaColor);
             functionDB.Add("Размытие методом усреднения", bluerOnAvergeMedian);
+            functionDB.Add("Размытие", simpleFilter);
+            functionDB.Add("увелечение резкости", simpleFilter);
+            functionDB.Add("сглаживание контуров", simpleFilter);
+            functionDB.Add("выделение границ разноцветных областей", simpleFilter);
+            functionDB.Add("resetBright", resetBright); 
             foreach (var filterEntry in filterDict)
             {
                 filtersList.Add(filterEntry.Key);
             }
             cb.DataSource = filtersList;
-            initFinished = true;
+           // initFinished = true;
         
+        }
+        void simpleFilter()
+        {
+            mainLoppCicle(filterDict[curFilter]);
+            
         }
 
         public void applyFilter()
         {
             bitmap = resultBitmap;
             functionDB[curFilter]();
+            resetBrightConrol();
             
             return;
         }
@@ -109,13 +121,12 @@ namespace watercolor
         void aquaColor()
         {
             bluerOnAvergeMedian();
-            mainLoppCicle(waterColorMask2d);
+            mainLoppCicle(filterDict[curFilter]);
         }
 
         private void waterColorFilter()
         {
             bluerOnAvergeMedian();
-            
             waterColor();
         }
         /// <summary>
@@ -273,7 +284,8 @@ namespace watercolor
 
         private int repairColor(int color)
         {
-            color = Convert.ToInt32(color / devisor);
+            if (devisor != 0)
+                color = Convert.ToInt32(color / devisor);
             if (color < 0)
                 return 0;
             if (color > 255)
@@ -361,7 +373,8 @@ namespace watercolor
 
         public void changeBright(int brightValue)
         {
-            
+            if (brightHold)
+                return;
             resultBitmap = new Bitmap(bitmap.Width, bitmap.Height); 
             clearCurMxs(1);
             brightValue -= 128;
@@ -378,16 +391,20 @@ namespace watercolor
                     grin = curPixelList[0][0].color.G + brightValue;
                     blue = curPixelList[0][0].color.B + brightValue;
                     resultBitmap.SetPixel(x, y, Color.FromArgb(repairColor(red), repairColor(grin), repairColor(blue)));
-
-                    //clearCurMxs(edgeMaxOnWaterCol);
                 }
             }
 
             mainCanvas.Image = (Image)resultBitmap;
             
         }
+        void resetBrightConrol()
+        {
+            brightHold = true;
+            functionDB["resetBright"]();
+            brightHold = false;
+        }
 
-
+        
         /// <summary>
         /// загрузка картинки
         /// </summary>

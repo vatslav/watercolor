@@ -18,7 +18,7 @@ namespace watercolor
         {
             InitializeComponent();
             brightLabel.Text = brightTrackBar.Value.ToString();
-            core = new Core(pictureBox1, comboBox1, this);
+            core = new Core(pictureBox1, comboBox1, this.resetBightConrols);
             //core.openFile(@"C:\Users\Public\Pictures\Sample Pictures\Chrysanthemum3.jpg");
             //core.applyFilter();
             
@@ -97,8 +97,12 @@ namespace watercolor
         {
             if (Equals(core,null))
                 return;
-            var t = comboBox1.SelectedItem.ToString();
             core.curFilter = comboBox1.SelectedItem.ToString();
+        }
+        public void resetBightConrols()
+        {
+            brightTrackBar.Value = 128;
+            brightLabel.Text = "128";
         }
     }
 }
