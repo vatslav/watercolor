@@ -42,12 +42,10 @@ namespace watercolor
             {
                 if (lefIsActiv)
                 {
-                    Console.WriteLine("leftActiv");
                     return leftBitmap;
                 }
                 else
                 {
-                    Console.WriteLine("rightActiv");
                     return rightBitmap;
                 }
             }
@@ -184,7 +182,6 @@ namespace watercolor
 
         public void applyFilter()
         {
-            curBitmap = resultBitmap;
             functionDB[curFilter]();
             resetBrightConrol();
             
@@ -352,16 +349,7 @@ namespace watercolor
         }
         void finalizeResult(Bitmap result)
         {
-            if (lefIsActiv)
-            {
-                leftBitmap = result;
-            }
-            else
-            {
-                rightBitmap = result;
-            }
             curBitmap = result;
-            
             curCanvas.Image = (Image)curBitmap;
            
         }
