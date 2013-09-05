@@ -13,14 +13,17 @@ namespace watercolor
     {
         Core core;
         public int brightValue;
+        PictureBox currentPb = new PictureBox();
 
         public MainForm()
         {
             InitializeComponent();
             brightLabel.Text = brightTrackBar.Value.ToString();
-            core = new Core(pictureBox1, comboBox1, this.resetBightConrols);
+            currentPb = inputBox;
+            core = new Core(inputBox, comboBox1, this.resetBightConrols);
             //core.openFile(@"C:\Users\Public\Pictures\Sample Pictures\Chrysanthemum3.jpg");
             //core.applyFilter();
+
             
         }
         private void openImage()
@@ -45,24 +48,8 @@ namespace watercolor
                 MessageBox.Show("Ошибка: " + ex.Message);
             }
         }
-        
-        private void bOpen_Click(object sender, EventArgs e)
-        {
-            openImage();
-        }
 
-        private void bApply_Click(object sender, EventArgs e)
-        {
-            if (core.isFast())
-                return;
-            this.UseWaitCursor = true;
-            this.pictureBox1.UseWaitCursor = true;
-            core.applyFilter();
-            this.UseWaitCursor = false;
-            this.pictureBox1.UseWaitCursor = false;
-        }
-
-        private void bSafe_Click(object sender, EventArgs e)
+        void saveImage()
         {
             if (core.isFast())
                 return;
@@ -72,6 +59,32 @@ namespace watercolor
             saveDial.ShowDialog();
             if (saveDial.FileName != "")
                 core.safeFile(saveDial.FileName);
+        }
+
+        void applyFilter()
+        {
+            if (core.isFast())
+                return;
+            this.UseWaitCursor = true;
+            this.inputBox.UseWaitCursor = true;
+            core.applyFilter();
+            this.UseWaitCursor = false;
+            this.inputBox.UseWaitCursor = false;
+        }
+        
+        private void bOpen_Click(object sender, EventArgs e)
+        {
+            openImage();
+        }
+
+        private void bApply_Click(object sender, EventArgs e)
+        {
+            applyFilter();
+        }
+
+        private void bSafe_Click(object sender, EventArgs e)
+        {
+            saveImage();
 
         }
 
@@ -103,6 +116,31 @@ namespace watercolor
         {
             brightTrackBar.Value = 128;
             brightLabel.Text = "128";
+        }
+
+        private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openImage();
+        }
+
+        private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveImage();   
+        }
+
+        private void применитьФильтрToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            applyFilter();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

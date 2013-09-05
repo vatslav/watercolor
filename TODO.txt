@@ -10,3 +10,5 @@ statusbar
 2)http://algolist.manual.ru/graphics/filter/aquarel.php
 
 проблема по всей видимости в обработки цвета когда сумма коэфициентов матрицы равна 0
+
+отправка на сайт github`а
