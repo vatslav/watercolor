@@ -26,6 +26,8 @@ namespace watercolor
             autoFilter.Checked = true;
             //core.openFile(@"C:\Users\Public\Pictures\Sample Pictures\Chrysanthemum3.jpg");
             //core.applyFilter();
+            hScrollBar1.ValueChanged += new System.EventHandler(this.hScrollBar1_ValueChanged);
+            vScrollBar1.ValueChanged += new System.EventHandler(this.hScrollBar1_ValueChanged);
 
             
         }
@@ -157,6 +159,16 @@ namespace watercolor
         private void фильтрToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void hScrollBar1_ValueChanged(object sender, EventArgs e)
+        {
+            panel1.Top = -hScrollBar1.Value;
+        }
+
+        private void vScrollBar1_ValueChanged(object sender, EventArgs e)
+        {
+            panel1.Left = vScrollBar1.Value;
         }
     }
 }

@@ -51,6 +51,9 @@
             this.применитьФильтрToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.оПрограммеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.поддержкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
+            this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.resultBox)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -58,13 +61,14 @@
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.inputBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.resultBox);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.groupBox1.Location = new System.Drawing.Point(449, 133);
+            this.groupBox1.Location = new System.Drawing.Point(474, 133);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(439, 360);
             this.groupBox1.TabIndex = 7;
@@ -73,7 +77,7 @@
             // 
             // resultBox
             // 
-            this.resultBox.Location = new System.Drawing.Point(6, 21);
+            this.resultBox.Location = new System.Drawing.Point(6, 18);
             this.resultBox.Name = "resultBox";
             this.resultBox.Size = new System.Drawing.Size(419, 333);
             this.resultBox.TabIndex = 5;
@@ -210,18 +214,20 @@
             // 
             // groupBox5
             // 
-            this.groupBox5.Controls.Add(this.inputBox);
+            this.groupBox5.Controls.Add(this.vScrollBar1);
+            this.groupBox5.Controls.Add(this.hScrollBar1);
+            this.groupBox5.Controls.Add(this.panel1);
             this.groupBox5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBox5.Location = new System.Drawing.Point(12, 133);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(431, 360);
+            this.groupBox5.Size = new System.Drawing.Size(456, 375);
             this.groupBox5.TabIndex = 8;
             this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Исходное изображение";
+            this.groupBox5.Text = "Эскиз изображения";
             // 
             // inputBox
             // 
-            this.inputBox.Location = new System.Drawing.Point(6, 21);
+            this.inputBox.Location = new System.Drawing.Point(0, 3);
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(419, 333);
             this.inputBox.TabIndex = 4;
@@ -293,11 +299,35 @@
             this.поддержкаToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.поддержкаToolStripMenuItem.Text = "Поддержка";
             // 
+            // hScrollBar1
+            // 
+            this.hScrollBar1.Location = new System.Drawing.Point(6, 357);
+            this.hScrollBar1.Name = "hScrollBar1";
+            this.hScrollBar1.Size = new System.Drawing.Size(419, 15);
+            this.hScrollBar1.TabIndex = 5;
+            this.hScrollBar1.ValueChanged += new System.EventHandler(this.hScrollBar1_ValueChanged);
+            // 
+            // vScrollBar1
+            // 
+            this.vScrollBar1.Location = new System.Drawing.Point(428, 18);
+            this.vScrollBar1.Name = "vScrollBar1";
+            this.vScrollBar1.Size = new System.Drawing.Size(18, 333);
+            this.vScrollBar1.TabIndex = 6;
+            this.vScrollBar1.ValueChanged += new System.EventHandler(this.vScrollBar1_ValueChanged);
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.inputBox);
+            this.panel1.Location = new System.Drawing.Point(6, 18);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(444, 354);
+            this.panel1.TabIndex = 7;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(936, 505);
+            this.ClientSize = new System.Drawing.Size(936, 520);
             this.Controls.Add(this.bSafe);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.bApply);
@@ -317,6 +347,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.inputBox)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -347,6 +378,9 @@
         private System.Windows.Forms.Label brightLabel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox autoFilter;
+        private System.Windows.Forms.VScrollBar vScrollBar1;
+        private System.Windows.Forms.HScrollBar hScrollBar1;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 

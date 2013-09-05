@@ -90,6 +90,7 @@ namespace watercolor
         public bool autoFilter = true;
         bool lefIsActiv = true;
         public int brightValue=128;
+        public bool scale = false;
 
         public bool LefIsActiv
         {
@@ -503,7 +504,7 @@ namespace watercolor
                 curBitmap.Dispose();
             
             //TODO: resize
-            leftCanvas.SizeMode = PictureBoxSizeMode.StretchImage;
+            leftCanvas.SizeMode = PictureBoxSizeMode.Normal;
             rightCanvas.SizeMode = PictureBoxSizeMode.StretchImage;
             //curCanvas.SizeMode = PictureBoxSizeMode.StretchImage;
             leftBitmap = new Bitmap(path);
