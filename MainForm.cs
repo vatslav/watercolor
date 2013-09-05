@@ -100,7 +100,8 @@ namespace watercolor
             }
             brightLabel.Text = brightTrackBar.Value.ToString();
             brightValue = brightTrackBar.Value;
-            core.changeBright(brightTrackBar.Value);
+            core.brightValue = brightTrackBar.Value;
+            core.changeBright();
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)

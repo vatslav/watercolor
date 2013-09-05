@@ -89,6 +89,7 @@ namespace watercolor
         public bool brightHold = false; //запрет на изменение яркости
         public bool autoFilter = true;
         bool lefIsActiv = true;
+        public int brightValue=128;
 
         public bool LefIsActiv
         {
@@ -349,9 +350,12 @@ namespace watercolor
         }
         void finalizeResult(Bitmap result)
         {
-            curBitmap = result;
+            RectangleF cloneRect = new RectangleF(0, 0, curBitmap.Width, curBitmap.Height);
+            System.Drawing.Imaging.PixelFormat format = curBitmap.PixelFormat;
+            curBitmap = result.Clone(cloneRect, format);
+            
             curCanvas.Image = (Image)curBitmap;
-           
+            //changeBright(true);
         }
 
 
@@ -444,13 +448,13 @@ namespace watercolor
 
         }
 
-        public void changeBright(int brightValue)
+        public void changeBright(bool finalize=false)
         {
             if (brightHold)
                 return;
-            resultBitmap = new Bitmap(leftBitmap.Width, leftBitmap.Height); 
+            //resultBitmap = new Bitmap(leftBitmap.Width, leftBitmap.Height); 
             clearCurMxs(1);
-            brightValue -= 128;
+            int localBrightValue = brightValue - 128;
             int red;
             int grin;
             int blue;
@@ -460,14 +464,21 @@ namespace watercolor
                 foreach (var y in Enumerable.Range(0, leftBitmap.Height))
                 {
                     getElems(x, y, 1, 0);
-                    red = curPixelList[0][0].color.R + brightValue;
-                    grin = curPixelList[0][0].color.G + brightValue;
-                    blue = curPixelList[0][0].color.B + brightValue;
+                    red = curPixelList[0][0].color.R + localBrightValue;
+                    grin = curPixelList[0][0].color.G + localBrightValue;
+                    blue = curPixelList[0][0].color.B + localBrightValue;
                     resultBitmap.SetPixel(x, y, Color.FromArgb(repairColor(red), repairColor(grin), repairColor(blue)));
                 }
             }
 
-            leftCanvas.Image = (Image)resultBitmap;
+
+            if (finalize)
+            {
+                curBitmap = resultBitmap;
+                curCanvas.Image = (Image)resultBitmap;
+            }
+            else
+                curCanvas.Image = (Image)resultBitmap;
             
         }
         void resetBrightConrol()
@@ -516,8 +527,3 @@ namespace watercolor
 
     }
 }
-
-
-        //List<int> waterColorMask = new  List<int>{0, -1, 0,
-        //                                                -1, 4, -1,
-        //                                                0, -1, 0};
