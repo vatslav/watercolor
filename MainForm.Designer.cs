@@ -29,11 +29,17 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.resultBox = new System.Windows.Forms.PictureBox();
             this.bSafe = new System.Windows.Forms.Button();
             this.bApply = new System.Windows.Forms.Button();
             this.bOpen = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.brightTrackBar = new System.Windows.Forms.TrackBar();
+            this.brightLabel = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.inputBox = new System.Windows.Forms.PictureBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -44,24 +50,19 @@
             this.применитьФильтрToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.оПрограммеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.поддержкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.brightLabel = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.brightTrackBar = new System.Windows.Forms.TrackBar();
-            this.resultBOx = new System.Windows.Forms.PictureBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.autoFilter = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.resultBox)).BeginInit();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.brightTrackBar)).BeginInit();
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.inputBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.brightTrackBar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.resultBOx)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.resultBOx);
+            this.groupBox1.Controls.Add(this.resultBox);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBox1.Location = new System.Drawing.Point(449, 133);
             this.groupBox1.Name = "groupBox1";
@@ -69,6 +70,14 @@
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Результирующие изображение";
+            // 
+            // resultBox
+            // 
+            this.resultBox.Location = new System.Drawing.Point(6, 21);
+            this.resultBox.Name = "resultBox";
+            this.resultBox.Size = new System.Drawing.Size(419, 333);
+            this.resultBox.TabIndex = 5;
+            this.resultBox.TabStop = false;
             // 
             // bSafe
             // 
@@ -111,6 +120,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.autoFilter);
             this.groupBox2.Controls.Add(this.checkBox2);
             this.groupBox2.Controls.Add(this.checkBox1);
             this.groupBox2.Controls.Add(this.brightTrackBar);
@@ -125,14 +135,67 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Тип фильтра";
             // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(12, 74);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(149, 20);
+            this.checkBox2.TabIndex = 11;
+            this.checkBox2.Text = "Масштабирование";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(12, 49);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(158, 20);
+            this.checkBox1.TabIndex = 10;
+            this.checkBox1.Text = "Применять к эскизу";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // brightTrackBar
+            // 
+            this.brightTrackBar.LargeChange = 1;
+            this.brightTrackBar.Location = new System.Drawing.Point(314, 37);
+            this.brightTrackBar.Maximum = 256;
+            this.brightTrackBar.Name = "brightTrackBar";
+            this.brightTrackBar.Size = new System.Drawing.Size(309, 42);
+            this.brightTrackBar.SmallChange = 10;
+            this.brightTrackBar.TabIndex = 6;
+            this.brightTrackBar.TickFrequency = 10;
+            this.brightTrackBar.Value = 128;
+            this.brightTrackBar.Scroll += new System.EventHandler(this.brightTrackBar_Scroll);
+            // 
+            // brightLabel
+            // 
+            this.brightLabel.AutoSize = true;
+            this.brightLabel.Location = new System.Drawing.Point(382, 18);
+            this.brightLabel.Name = "brightLabel";
+            this.brightLabel.Size = new System.Drawing.Size(29, 16);
+            this.brightLabel.TabIndex = 8;
+            this.brightLabel.Text = "128";
+            // 
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(6, 19);
+            this.comboBox1.Location = new System.Drawing.Point(12, 19);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(278, 24);
             this.comboBox1.TabIndex = 9;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(311, 18);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(65, 16);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "Яркость:";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // groupBox5
             // 
@@ -143,7 +206,7 @@
             this.groupBox5.Size = new System.Drawing.Size(431, 360);
             this.groupBox5.TabIndex = 8;
             this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Эскиз";
+            this.groupBox5.Text = "Исходное изображение";
             // 
             // inputBox
             // 
@@ -178,14 +241,14 @@
             // открытьToolStripMenuItem
             // 
             this.открытьToolStripMenuItem.Name = "открытьToolStripMenuItem";
-            this.открытьToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.открытьToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.открытьToolStripMenuItem.Text = "Открыть";
             this.открытьToolStripMenuItem.Click += new System.EventHandler(this.открытьToolStripMenuItem_Click);
             // 
             // сохранитьToolStripMenuItem
             // 
             this.сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
-            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.сохранитьToolStripMenuItem.Text = "Сохранить";
             this.сохранитьToolStripMenuItem.Click += new System.EventHandler(this.сохранитьToolStripMenuItem_Click);
             // 
@@ -215,69 +278,19 @@
             // поддержкаToolStripMenuItem
             // 
             this.поддержкаToolStripMenuItem.Name = "поддержкаToolStripMenuItem";
-            this.поддержкаToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.поддержкаToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.поддержкаToolStripMenuItem.Text = "Поддержка";
             // 
-            // brightLabel
+            // autoFilter
             // 
-            this.brightLabel.AutoSize = true;
-            this.brightLabel.Location = new System.Drawing.Point(527, 27);
-            this.brightLabel.Name = "brightLabel";
-            this.brightLabel.Size = new System.Drawing.Size(29, 16);
-            this.brightLabel.TabIndex = 8;
-            this.brightLabel.Text = "128";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(328, 27);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(193, 16);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "Яркость, текущее значение:";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
-            // 
-            // brightTrackBar
-            // 
-            this.brightTrackBar.LargeChange = 1;
-            this.brightTrackBar.Location = new System.Drawing.Point(331, 52);
-            this.brightTrackBar.Maximum = 256;
-            this.brightTrackBar.Name = "brightTrackBar";
-            this.brightTrackBar.Size = new System.Drawing.Size(309, 42);
-            this.brightTrackBar.SmallChange = 10;
-            this.brightTrackBar.TabIndex = 6;
-            this.brightTrackBar.TickFrequency = 10;
-            this.brightTrackBar.Value = 128;
-            this.brightTrackBar.Scroll += new System.EventHandler(this.brightTrackBar_Scroll);
-            // 
-            // resultBOx
-            // 
-            this.resultBOx.Location = new System.Drawing.Point(6, 21);
-            this.resultBOx.Name = "resultBOx";
-            this.resultBOx.Size = new System.Drawing.Size(419, 333);
-            this.resultBOx.TabIndex = 5;
-            this.resultBOx.TabStop = false;
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(12, 61);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(158, 20);
-            this.checkBox1.TabIndex = 10;
-            this.checkBox1.Text = "Применять к эскизу";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(176, 61);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(149, 20);
-            this.checkBox2.TabIndex = 11;
-            this.checkBox2.Text = "Масштабирование";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.autoFilter.AutoSize = true;
+            this.autoFilter.Location = new System.Drawing.Point(178, 74);
+            this.autoFilter.Name = "autoFilter";
+            this.autoFilter.Size = new System.Drawing.Size(253, 20);
+            this.autoFilter.TabIndex = 12;
+            this.autoFilter.Text = "автоматически применять фильтр";
+            this.autoFilter.UseVisualStyleBackColor = true;
+            this.autoFilter.CheckedChanged += new System.EventHandler(this.autoFilter_CheckedChanged);
             // 
             // MainForm
             // 
@@ -295,14 +308,14 @@
             this.Name = "MainForm";
             this.Text = "Сундучок с фильтрами v.1.5";
             this.groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.resultBox)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.brightTrackBar)).EndInit();
             this.groupBox5.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.inputBox)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.brightTrackBar)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.resultBOx)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -326,12 +339,13 @@
         private System.Windows.Forms.ToolStripMenuItem применитьФильтрToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem оПрограммеToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem поддержкаToolStripMenuItem;
-        private System.Windows.Forms.PictureBox resultBOx;
+        private System.Windows.Forms.PictureBox resultBox;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.TrackBar brightTrackBar;
         private System.Windows.Forms.Label brightLabel;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox autoFilter;
     }
 }
 

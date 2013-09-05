@@ -13,14 +13,17 @@ namespace watercolor
     {
         Core core;
         public int brightValue;
-        PictureBox currentPb = new PictureBox();
+       
 
         public MainForm()
         {
             InitializeComponent();
+
             brightLabel.Text = brightTrackBar.Value.ToString();
-            currentPb = inputBox;
-            core = new Core(inputBox, comboBox1, this.resetBightConrols);
+            
+            core = new Core(inputBox,resultBox, comboBox1, this.resetBightConrols);
+            checkBox1.Checked = true;
+            autoFilter.Checked = true;
             //core.openFile(@"C:\Users\Public\Pictures\Sample Pictures\Chrysanthemum3.jpg");
             //core.applyFilter();
 
@@ -28,24 +31,24 @@ namespace watercolor
         }
         private void openImage()
         {
+            OpenFileDialog askLoad = new OpenFileDialog();
             try
-            {
-                OpenFileDialog askLoad = new OpenFileDialog();
+            { 
                 askLoad.Filter = "jpeg|*.jpg|сырое изображение|*.bmp";
                 askLoad.Title = "Выберети изображение";
                 askLoad.ShowDialog();
-                Console.WriteLine(askLoad.FileName);
-                if (askLoad.FileName != "")
-                {
-                    core.openFile(askLoad.FileName);
-                    this.brightTrackBar.Value = 128;
-                    brightLabel.Text = "128";
-                }
 
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Ошибка: " + ex.Message);
+                return;
+            }
+            if (askLoad.FileName != "")
+            {
+                core.openFile(askLoad.FileName);
+                this.brightTrackBar.Value = 128;
+                brightLabel.Text = "128";
             }
         }
 
@@ -111,6 +114,8 @@ namespace watercolor
             if (Equals(core,null))
                 return;
             core.curFilter = comboBox1.SelectedItem.ToString();
+            if (autoFilter.Checked)
+                applyFilter();
         }
         public void resetBightConrols()
         {
@@ -140,7 +145,12 @@ namespace watercolor
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
+            core.changeCurrentCanvas(checkBox1.Checked);
+        }
 
+        private void autoFilter_CheckedChanged(object sender, EventArgs e)
+        {
+            core.autoFilter = autoFilter.Checked;
         }
     }
 }

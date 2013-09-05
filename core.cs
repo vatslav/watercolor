@@ -32,75 +32,67 @@ namespace watercolor
 
     class Core
     {
-        public Bitmap bitmap;
-        private Bitmap resultBitmap;
-        PictureBox mainCanvas;
-        //матрица выделения краев
-        List<List<double>> waterColorMask2d = new List<List<double>>{new List<double>{-0.5,-0.5,-0.5},
-                                                                new List<double>{-0.5, 5, -0.5},
-                                                                new List<double>{-0.5, -0.5, -0.5}};
-        //List<List<double>> waterColorMask2d = new List<List<double>>{new List<double>{0,05, 0,05, 0,05},
-        //                                                        new List<double>{0,05,0,06,0,05},
-        //                                                        new List<double>{0,05,0,05,0,05}};
-        List<int> curFilterMx = new  List<int>();
-        const int bluerOnWaterColor = 5;
-        const int edgeMaxOnWaterCol = 3;
-        const int edgeMaxOnWaterColLiniearly = edgeMaxOnWaterCol * edgeMaxOnWaterCol;
-        const int divisionIndex = 1;
-        List<List<PxColor>> curPixelList = new List<List<PxColor>>();
-        List<int> red = new List<int>(edgeMaxOnWaterCol);
+        public Bitmap leftBitmap; //битмап исходника
+        public Bitmap rightBitmap;
+        private Bitmap resultBitmap; //битмап результата
+        Bitmap curBitmap;
+        PictureBox leftCanvas; //холст левый
+        PictureBox rightCanvas = new PictureBox();//текущий холст
+        PictureBox curCanvas = new PictureBox(); //правый холст
+        const int bluerOnWaterColor = 5; //константа 5 элементов в элементов в 1 пакете обработки
+        const int edgeMaxOnWaterCol = 3; //константа 3 элементов в элементов в 1 пакете обработки
+        double elementsSum = 1; 
+        const int edgeMaxOnWaterColLiniearly = edgeMaxOnWaterCol * edgeMaxOnWaterCol; //3 элемента пр линейной обработки
+        List<List<PxColor>> curPixelList = new List<List<PxColor>>(); //текущий пакет пикселей
+        List<int> red = new List<int>(edgeMaxOnWaterCol); //список красных компонентов цвета
         List<int> grin = new List<int>(edgeMaxOnWaterCol);
         List<int> blue = new List<int>(edgeMaxOnWaterCol);
-        Dictionary<String, payLoad> functionDB = new Dictionary<string, payLoad>();
+        Dictionary<String, fitredFunction> functionDB = new Dictionary<string, fitredFunction>(); //делигат фильтра
         public String curFilter = "Акварелизация";
-        public bool brightHold = false;
+        public bool brightHold = false; //запрет на изменение яркости
+        public bool autoFilter = true;
         
-        public delegate void payLoad();
-        double devisor=1;
-        public List <String> filtersList = new List<string>(); /* = new [] {"Акварелизация", "Размытие методом усреднения", "Размытие", 
-        "увелечение резкости", "сглаживание контуров", "выделение границ разноцветных областей"};*/
-        Dictionary<String, List<List<double>>> filterDict = new Dictionary<string, List<List<double>>>();
-        //private delegate void payLoad(int x, int y, int brightValue);
-        List<int> t = new List<int>(){1,2,3};
-        public Core(PictureBox mainCanvas, ComboBox cb, payLoad resetBright) 
+        
+        public delegate void fitredFunction();
+        public List <String> filtersListForComboBox = new List<string>(); //список фильтров, который уйдет в предста
+        Dictionary<String, List<List<double>>> matrixFilters = new Dictionary<string, List<List<double>>>();
+        public Core(PictureBox mainCanvas, PictureBox secondCanvas, ComboBox cb, fitredFunction resetBright) 
         { 
-            this.mainCanvas = mainCanvas;
-            //curFilterMx = waterColorMask; //на случай большего кода
-            clearCurMxs(bluerOnWaterColor);
-            
-            //filterDict = new Dictionary<string,List<List<int>>>() {ne
-            filterDict.Add("Акварелизация", new List<List<double>>{new List<double>{-0.5,-0.5,-0.5},
+            this.leftCanvas = mainCanvas;
+            this.rightCanvas = secondCanvas;
+            clearCurMxs(bluerOnWaterColor);                     
+            matrixFilters.Add("Акварелизация", new List<List<double>>{new List<double>{-0.5,-0.5,-0.5},
                                                                 new List<double>{-0.5, 5, -0.5},
                                                                 new List<double>{-0.5, -0.5, -0.5}});
-            filterDict.Add("Размытие методом усреднения", new List<List<double>>());
-            filterDict.Add("Размытие", new List<List<double>>{new List<double>{1,1,1},
+            matrixFilters.Add("Размытие методом усреднения", new List<List<double>>());
+            matrixFilters.Add("Размытие", new List<List<double>>{new List<double>{1,1,1},
                                                                 new List<double>{1,8,1},
                                                                 new List<double>{1,1,1}});
-            filterDict.Add("Размытие по цвету соседей", new List<List<double>>{new List<double>{0,05, 0,05, 0,05},
+            matrixFilters.Add("Размытие по цвету соседей", new List<List<double>>{new List<double>{0,05, 0,05, 0,05},
                                                                 new List<double>{0,05,0,06,0,05},
                                                                 new List<double>{0,05,0,05,0,05}});
 
-            filterDict.Add("Увелечение резкости", new List<List<double>>{new List<double>{0,-1,0},
+            matrixFilters.Add("Увелечение резкости", new List<List<double>>{new List<double>{0,-1,0},
                                                                 new List<double>{-1,5,-1},
                                                                 new List<double>{0,-1,0}});
 
-            filterDict.Add("Увелечение резкости2", new List<List<double>>{new List<double>{-0.1,-0.1,-0.1},
+            matrixFilters.Add("Увелечение резкости2", new List<List<double>>{new List<double>{-0.1,-0.1,-0.1},
                                                                 new List<double>{-0.1,1.8,-0.1},
                                                                 new List<double>{-0.1,-0.1,-0.1}});
-            filterDict.Add("Сглаживание контуров", new List<List<double>>{new List<double>{0,1,0},
+            matrixFilters.Add("Сглаживание контуров", new List<List<double>>{new List<double>{0,1,0},
                                                                 new List<double>{1,1,1},
                                                                 new List<double>{0,1,0}});
 
-            filterDict.Add("Выделение границ разноцветных областей",  new List<List<double>>{new List<double>{0,-1,0},
+            matrixFilters.Add("Выделение границ разноцветных областей",  new List<List<double>>{new List<double>{0,-1,0},
                                                                 new List<double>{-1, 4, -1},
                                                                 new List<double>{0, -1, 0}});
-            filterDict.Add("Тиснение0", new List<List<double>>{new List<double>{-1,0,1},
+            matrixFilters.Add("Тиснение0", new List<List<double>>{new List<double>{-1,0,1},
                                                                 new List<double>{-2,0,2},
                                                                 new List<double>{-1, 0,1}});
-            filterDict.Add("Тиснение1", new List<List<double>>{new List<double>{-1,-1,-1},
+            matrixFilters.Add("Тиснение1", new List<List<double>>{new List<double>{-1,-1,-1},
                                                                 new List<double>{-1,8,-1},
                                                                 new List<double>{-1, -1,-1}});
-            filterDict.Add("Тиснение2", new List<List<double>>{new List<double>{0,-1,0},
+            matrixFilters.Add("Тиснение2", new List<List<double>>{new List<double>{0,-1,0},
                                                                 new List<double>{-1,4,-1},
                                                                 new List<double>{0, -1,0}});
             functionDB.Add("Акварелизация", aquaColor);
@@ -115,31 +107,47 @@ namespace watercolor
             functionDB.Add("Тиснение", embossed);
             foreach (var filterEntry in functionDB)
             {
-                filtersList.Add(filterEntry.Key);
+                filtersListForComboBox.Add(filterEntry.Key);
             }
-            cb.DataSource = filtersList;
-            functionDB.Add("resetBright", resetBright);
-           // initFinished = true;
+            cb.DataSource = filtersListForComboBox;
+            functionDB.Add("resetBright", resetBright);           
         
         }
+        /// <summary>
+        /// смена активного холста
+        /// </summary>
+        public void changeCurrentCanvas(bool isScatchApply)
+        {
+            if (!isScatchApply)
+            {
+                curBitmap = rightBitmap;
+                curCanvas = rightCanvas;
+            }
+            else
+            {
+                curBitmap = leftBitmap;
+                curCanvas = leftCanvas;
+            }
+        }
+
         /// <summary>
         /// применение фильра в случаях простых преобразований (отличие только в матрице)
         /// </summary>
         void simpleFilter()
         {
-            mainLoppCicle(filterDict[curFilter]);
+            mainLoppCicle(matrixFilters[curFilter]);
             
         }
         void embossed()
         {
-            mainLoppCicle(filterDict["Тиснение0"]);
-            mainLoppCicle(filterDict["Тиснение1"]);
-            mainLoppCicle(filterDict["Тиснение2"]);
+            mainLoppCicle(matrixFilters["Тиснение0"]);
+            mainLoppCicle(matrixFilters["Тиснение1"]);
+            mainLoppCicle(matrixFilters["Тиснение2"]);
         }
 
         public void applyFilter()
         {
-            bitmap = resultBitmap;
+            curBitmap = resultBitmap;
             functionDB[curFilter]();
             resetBrightConrol();
             
@@ -149,7 +157,7 @@ namespace watercolor
         void aquaColor()
         {
             bluerOnAvergeMedian();
-            mainLoppCicle(filterDict[curFilter]);
+            mainLoppCicle(matrixFilters[curFilter]);
         }
 
         private void waterColorFilter()
@@ -162,7 +170,7 @@ namespace watercolor
         /// </summary>
         public bool isFast()
         {
-            if (bitmap == null)
+            if (leftBitmap == null)
                 return true;
             return false;
         }
@@ -176,9 +184,9 @@ namespace watercolor
             clearCurMxs(bluerOnWaterColor);
             int index = 0;
             //сглаживание
-            foreach (var x in Enumerable.Range(0, bitmap.Width))
+            foreach (var x in Enumerable.Range(0, leftBitmap.Width))
             {
-                foreach (var y in Enumerable.Range(0, bitmap.Height))
+                foreach (var y in Enumerable.Range(0, leftBitmap.Height))
                 {
                     getElems(x, y, bluerOnWaterColor);
                     foreach (var ListElem in curPixelList)
@@ -206,8 +214,7 @@ namespace watercolor
                     blue.Clear();
                 }
             }
-            bitmap = resultBitmap;
-            mainCanvas.Image = (Image)resultBitmap;
+            finalizeResult(resultBitmap);
 
         }
 
@@ -221,9 +228,9 @@ namespace watercolor
             clearCurMxs(edgeMaxOnWaterCol);
 
 
-            foreach (var x in Enumerable.Range(0, bitmap.Width))
+            foreach (var x in Enumerable.Range(0, leftBitmap.Width))
             {
-                foreach (var y in Enumerable.Range(0, bitmap.Height))
+                foreach (var y in Enumerable.Range(0, leftBitmap.Height))
                 {
                    getElems(x, y, edgeMaxOnWaterCol);
                     foreach (var ix in Enumerable.Range(0,edgeMaxOnWaterCol))
@@ -232,9 +239,9 @@ namespace watercolor
                         {
                             if (curPixelList[ix][iy].isExist)
                             {
-                                 red.Add(Convert.ToInt32(curPixelList[ix][iy].color.R * waterColorMask2d[ix][iy]));
-                                grin.Add(Convert.ToInt32(curPixelList[ix][iy].color.G * waterColorMask2d[ix][iy]));
-                                blue.Add(Convert.ToInt32(curPixelList[ix][iy].color.B * waterColorMask2d[ix][iy]));
+                                 red.Add(Convert.ToInt32(curPixelList[ix][iy].color.R * matrixFilters["Акварелизация"][ix][iy]));
+                                 grin.Add(Convert.ToInt32(curPixelList[ix][iy].color.G * matrixFilters["Акварелизация"][ix][iy]));
+                                 blue.Add(Convert.ToInt32(curPixelList[ix][iy].color.B * matrixFilters["Акварелизация"][ix][iy]));
                             } 
                         }
                     }
@@ -250,8 +257,7 @@ namespace watercolor
 
             }
 
-            bitmap = resultBitmap;
-            mainCanvas.Image = (Image)resultBitmap;
+            finalizeResult(resultBitmap);
             return;
         }
         
@@ -261,9 +267,9 @@ namespace watercolor
             clearCurMxs(sizeMx);
 
 
-            foreach (var x in Enumerable.Range(0, bitmap.Width))
+            foreach (var x in Enumerable.Range(0, leftBitmap.Width))
             {
-                foreach (var y in Enumerable.Range(0, bitmap.Height))
+                foreach (var y in Enumerable.Range(0, leftBitmap.Height))
                 {
                     getElems(x, y, sizeMx);
                     foreach (var ix in Enumerable.Range(0, sizeMx))
@@ -278,7 +284,7 @@ namespace watercolor
                             }
                         }
                     }
-                    devisor = findSumMatrixElem(filterMask);
+                    elementsSum = findSumMatrixElem(filterMask);
                     resultBitmap.SetPixel(x, y, Color.FromArgb(repairColor(red.Sum()), repairColor(grin.Sum()), repairColor(blue.Sum())));
 
                     red.Clear();
@@ -290,8 +296,7 @@ namespace watercolor
 
             }
 
-            bitmap = resultBitmap;
-            mainCanvas.Image = (Image)resultBitmap;
+            finalizeResult(resultBitmap);
             return;
         }
         double findSumMatrixElem(List<List<double>> filterMask)
@@ -308,12 +313,17 @@ namespace watercolor
             return sum;
 
         }
+        void finalizeResult(Bitmap result)
+        {
+            curBitmap = result;
+            curCanvas.Image = (Image)curBitmap;
+        }
 
 
         private int repairColor(int color)
         {
-            if (devisor != 0)
-                color = Convert.ToInt32(color / devisor);
+            if (elementsSum != 0)
+                color = Convert.ToInt32(color / elementsSum);
             if (color < 0)
                 return 0;
             if (color > 255)
@@ -337,14 +347,14 @@ namespace watercolor
             {
                 foreach (var iy in Enumerable.Range(y + offStart, count))
                 {
-                    if (ix < 0 || iy < 0 || ix>=bitmap.Width ||iy>=bitmap.Height)
+                    if (ix < 0 || iy < 0 || ix>=leftBitmap.Width ||iy>=leftBitmap.Height)
                     {
                         curPixelList[i][j] = new PxColor(null);
                         continue;
                     }
                     try
                     {
-                        curPixelList[i][j] = new PxColor(bitmap.GetPixel(ix, iy), true);
+                        curPixelList[i][j] = new PxColor(leftBitmap.GetPixel(ix, iy), true);
                     }  
                     catch (ArgumentOutOfRangeException)
                     {
@@ -403,16 +413,16 @@ namespace watercolor
         {
             if (brightHold)
                 return;
-            resultBitmap = new Bitmap(bitmap.Width, bitmap.Height); 
+            resultBitmap = new Bitmap(leftBitmap.Width, leftBitmap.Height); 
             clearCurMxs(1);
             brightValue -= 128;
             int red;
             int grin;
             int blue;
             //clearCurMxs(edgeMaxOnWaterCol);
-            foreach (var x in Enumerable.Range(0, bitmap.Width))
+            foreach (var x in Enumerable.Range(0, leftBitmap.Width))
             {
-                foreach (var y in Enumerable.Range(0, bitmap.Height))
+                foreach (var y in Enumerable.Range(0, leftBitmap.Height))
                 {
                     getElems(x, y, 1, 0);
                     red = curPixelList[0][0].color.R + brightValue;
@@ -422,7 +432,7 @@ namespace watercolor
                 }
             }
 
-            mainCanvas.Image = (Image)resultBitmap;
+            leftCanvas.Image = (Image)resultBitmap;
             
         }
         void resetBrightConrol()
@@ -439,21 +449,32 @@ namespace watercolor
         /// <param name="path"></param>
         public void openFile(String path)
         {
-            if (bitmap != null)
-            {
-                bitmap.Dispose();
-            }
-            mainCanvas.SizeMode = PictureBoxSizeMode.StretchImage;
-            bitmap = new Bitmap(path);
-            resultBitmap = bitmap;
-            mainCanvas.Image = (Image)bitmap;
+            if (leftBitmap!=null)
+                leftBitmap.Dispose();
+            if (rightBitmap != null)
+                rightBitmap.Dispose();
+            if (curBitmap != null)
+                curBitmap.Dispose();
+            
+            //TODO: resize
+            leftCanvas.SizeMode = PictureBoxSizeMode.StretchImage;
+            rightCanvas.SizeMode = PictureBoxSizeMode.StretchImage;
+            curCanvas.SizeMode = PictureBoxSizeMode.StretchImage;
+            leftBitmap = new Bitmap(path);
+            rightBitmap = new Bitmap(path);
+            resultBitmap = new Bitmap(path);
+            rightCanvas.Image = (Image)leftBitmap;
+            leftCanvas.Image = (Image)leftBitmap;
             
 
         }
 
         public void safeFile(String path)
         {
-            resultBitmap.Save(path);
+            
+            rightBitmap.Save(path);
+            
+
         }
 
 
