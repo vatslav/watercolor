@@ -145,12 +145,17 @@ namespace watercolor
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            core.changeCurrentCanvas(checkBox1.Checked);
+            core.LefIsActiv =  checkBox1.Checked;
         }
 
         private void autoFilter_CheckedChanged(object sender, EventArgs e)
         {
             core.autoFilter = autoFilter.Checked;
+        }
+
+        private void фильтрToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

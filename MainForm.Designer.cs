@@ -34,6 +34,7 @@
             this.bApply = new System.Windows.Forms.Button();
             this.bOpen = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.autoFilter = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.brightTrackBar = new System.Windows.Forms.TrackBar();
@@ -50,7 +51,6 @@
             this.применитьФильтрToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.оПрограммеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.поддержкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.autoFilter = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.resultBox)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -134,6 +134,17 @@
             this.groupBox2.TabIndex = 10;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Тип фильтра";
+            // 
+            // autoFilter
+            // 
+            this.autoFilter.AutoSize = true;
+            this.autoFilter.Location = new System.Drawing.Point(178, 74);
+            this.autoFilter.Name = "autoFilter";
+            this.autoFilter.Size = new System.Drawing.Size(253, 20);
+            this.autoFilter.TabIndex = 12;
+            this.autoFilter.Text = "автоматически применять фильтр";
+            this.autoFilter.UseVisualStyleBackColor = true;
+            this.autoFilter.CheckedChanged += new System.EventHandler(this.autoFilter_CheckedChanged);
             // 
             // checkBox2
             // 
@@ -257,8 +268,9 @@
             this.фильтрToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.применитьФильтрToolStripMenuItem});
             this.фильтрToolStripMenuItem.Name = "фильтрToolStripMenuItem";
-            this.фильтрToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
-            this.фильтрToolStripMenuItem.Text = "Фильтр";
+            this.фильтрToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
+            this.фильтрToolStripMenuItem.Text = "Изображение";
+            this.фильтрToolStripMenuItem.Click += new System.EventHandler(this.фильтрToolStripMenuItem_Click);
             // 
             // применитьФильтрToolStripMenuItem
             // 
@@ -280,17 +292,6 @@
             this.поддержкаToolStripMenuItem.Name = "поддержкаToolStripMenuItem";
             this.поддержкаToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.поддержкаToolStripMenuItem.Text = "Поддержка";
-            // 
-            // autoFilter
-            // 
-            this.autoFilter.AutoSize = true;
-            this.autoFilter.Location = new System.Drawing.Point(178, 74);
-            this.autoFilter.Name = "autoFilter";
-            this.autoFilter.Size = new System.Drawing.Size(253, 20);
-            this.autoFilter.TabIndex = 12;
-            this.autoFilter.Text = "автоматически применять фильтр";
-            this.autoFilter.UseVisualStyleBackColor = true;
-            this.autoFilter.CheckedChanged += new System.EventHandler(this.autoFilter_CheckedChanged);
             // 
             // MainForm
             // 

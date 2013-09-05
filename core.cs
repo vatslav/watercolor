@@ -35,10 +35,49 @@ namespace watercolor
         public Bitmap leftBitmap; //битмап исходника
         public Bitmap rightBitmap;
         private Bitmap resultBitmap; //битмап результата
-        Bitmap curBitmap;
+
+        Bitmap curBitmap
+        {
+            get 
+            {
+                if (lefIsActiv)
+                {
+                    Console.WriteLine("leftActiv");
+                    return leftBitmap;
+                }
+                else
+                {
+                    Console.WriteLine("rightActiv");
+                    return rightBitmap;
+                }
+            }
+            set 
+            {
+                if (lefIsActiv)
+                    leftBitmap = value;
+                else
+                    rightBitmap = value;
+            }
+        }
+
         PictureBox leftCanvas; //холст левый
-        PictureBox rightCanvas = new PictureBox();//текущий холст
-        PictureBox curCanvas = new PictureBox(); //правый холст
+        PictureBox rightCanvas = new PictureBox();//правый холст
+        PictureBox curCanvas
+        {
+          get 
+          {
+              if (lefIsActiv) return leftCanvas;
+              else return rightCanvas;
+          }
+          set 
+          {
+              if (lefIsActiv) leftCanvas = value;
+              else rightCanvas = value; 
+          }
+        }
+        
+
+
         const int bluerOnWaterColor = 5; //константа 5 элементов в элементов в 1 пакете обработки
         const int edgeMaxOnWaterCol = 3; //константа 3 элементов в элементов в 1 пакете обработки
         double elementsSum = 1; 
@@ -51,7 +90,14 @@ namespace watercolor
         public String curFilter = "Акварелизация";
         public bool brightHold = false; //запрет на изменение яркости
         public bool autoFilter = true;
-        
+        bool lefIsActiv = true;
+
+        public bool LefIsActiv
+        {
+            get { return lefIsActiv; }
+            set { lefIsActiv = value; }
+        }
+
         
         public delegate void fitredFunction();
         public List <String> filtersListForComboBox = new List<string>(); //список фильтров, который уйдет в предста
@@ -118,16 +164,7 @@ namespace watercolor
         /// </summary>
         public void changeCurrentCanvas(bool isScatchApply)
         {
-            if (!isScatchApply)
-            {
-                curBitmap = rightBitmap;
-                curCanvas = rightCanvas;
-            }
-            else
-            {
-                curBitmap = leftBitmap;
-                curCanvas = leftCanvas;
-            }
+
         }
 
         /// <summary>
@@ -315,8 +352,18 @@ namespace watercolor
         }
         void finalizeResult(Bitmap result)
         {
+            if (lefIsActiv)
+            {
+                leftBitmap = result;
+            }
+            else
+            {
+                rightBitmap = result;
+            }
             curBitmap = result;
+            
             curCanvas.Image = (Image)curBitmap;
+           
         }
 
 
@@ -347,14 +394,14 @@ namespace watercolor
             {
                 foreach (var iy in Enumerable.Range(y + offStart, count))
                 {
-                    if (ix < 0 || iy < 0 || ix>=leftBitmap.Width ||iy>=leftBitmap.Height)
+                    if (ix < 0 || iy < 0 || ix >= curBitmap.Width || iy >= curBitmap.Height)
                     {
                         curPixelList[i][j] = new PxColor(null);
                         continue;
                     }
                     try
                     {
-                        curPixelList[i][j] = new PxColor(leftBitmap.GetPixel(ix, iy), true);
+                        curPixelList[i][j] = new PxColor(curBitmap.GetPixel(ix, iy), true);
                     }  
                     catch (ArgumentOutOfRangeException)
                     {
@@ -459,11 +506,11 @@ namespace watercolor
             //TODO: resize
             leftCanvas.SizeMode = PictureBoxSizeMode.StretchImage;
             rightCanvas.SizeMode = PictureBoxSizeMode.StretchImage;
-            curCanvas.SizeMode = PictureBoxSizeMode.StretchImage;
+            //curCanvas.SizeMode = PictureBoxSizeMode.StretchImage;
             leftBitmap = new Bitmap(path);
             rightBitmap = new Bitmap(path);
             resultBitmap = new Bitmap(path);
-            rightCanvas.Image = (Image)leftBitmap;
+            rightCanvas.Image = (Image)rightBitmap;
             leftCanvas.Image = (Image)leftBitmap;
             
 
